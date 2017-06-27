@@ -1,0 +1,109 @@
+.Editor-sidebar {
+  width: 200px;
+  position: fixed;
+  top: 40px;
+  bottom: 30px;
+  overflow-y: auto;
+  margin-right: 15px;
+}
+
+.Editor-sidebar a,
+.Editor-sidebar pre,
+.Editor-sidebar p {
+  font-size: 12px;
+}
+
+.Editor-sidebar>.uk-nav {
+  margin-top: 15px;
+}
+
+.Editor-sidebar-section-header {
+  height: 40px;
+  padding: 13px 15px 0 13px;
+  text-transform: none;
+}
+
+.Editor-sidebar-button {
+  width: 50%;
+  height: 40px;
+  border: none;
+  outline: none;
+  transition: background 0.2s;
+  cursor: pointer;
+  background: #000000;
+  color: #f1f1f1;
+}
+
+.Editor-sidebar-button:hover {
+  background: #515151;
+}
+
+.Editor-sidebar-button:first-child::before {
+  border-bottom: 2px solid #E10098;
+  content: '';
+  position: absolute;
+  top: 38px;
+  left: 0;
+  width: 50%;
+  transform: translateX(100%);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.3s;
+}
+
+.Editor-sidebar-button-active:first-child::before {
+  transform: translateX(0);
+}
+
+.Editor-sidebar .uk-parent>a {
+  background: none !important;
+  cursor: default;
+  color: #9b9b9b !important;
+  border-bottom: 1px solid #515151;
+}
+
+.Editor-sidebar .uk-parent>a:hover {
+  background: none !important;
+}
+
+.Editor-sidebar .uk-nav-sub li a {
+  color: #f1f1f1;
+  margin-left: -15px;
+  padding: 4px 15px 0 15px;
+}
+
+.Editor-sidebar .uk-nav-sub li a:hover,
+.Editor-sidebar .uk-nav-sub li a:active,
+.Editor-sidebar .uk-nav-sub li a:visited,
+.Editor-sidebar .uk-nav-sub li a:focus {
+  color: #f1f1f1;
+  background: #515151;
+}
+
+.Editor-sidebar .uk-nav-side>li>a {
+  color: #f1f1f1;
+}
+
+.Editor-sidebar .uk-nav-side>li>a:hover {
+  background: #515151;
+}
+
+.Editor-sidebar-edit-item,
+.Editor-sidebar-edit-item:hover,
+.Editor-sidebar-edit-item:active,
+.Editor-sidebar-edit-item:focus {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.Editor-sidebar-edit-item:hover,
+.Editor-sidebar-edit-item:active,
+.Editor-sidebar-edit-item:focus {
+  color: #E10098;
+}
+
+.Editor-sidebar-edit-item {
+  background: none;
+  color: #f1f1f1;
+  float: right;
+}

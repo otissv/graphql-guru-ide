@@ -1,0 +1,48 @@
+.uk-modal {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.uk-modal-dialog {
+  background: #000000;
+  border: 1px solid #515151;
+}
+
+.uk-modal-header {
+  border-bottom: 2px solid #E10098;
+  background: #000000;
+  padding: 3px 15px;
+  margin: 0;
+  color: #f1f1f1;
+}
+
+.graphiql-container .uk-modal .uk-modal-header h2 {
+  font-size: 16px;
+  margin: 0;
+  color: #f1f1f1;
+}
+
+.uk-button {
+  background: #000000;
+  color: #f1f1f1 !important;
+}
+
+.uk-button:hover {
+  color: #f1f1f1 !important;
+  background: #515151;
+}
+
+.uk-button.Editor-modal-primary,
+.uk-button.Editor-modal-primary:focus,
+.uk-button.Editor-modal-primary:hover,
+.uk-button.Editor-modal-primary:active {
+  color: #E10098 !important;
+}
+
+.Select-input input {
+  border: none !important;
+  background: rgb(0, 0, 0, 0) !important;
+}
+
+.uk-modal-close:after {
+  color: #f1f1f1;
+}

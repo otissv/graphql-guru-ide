@@ -1,0 +1,6 @@
+{
+  "plugins": [
+    "syntax-decorators",
+    "babel-plugin-transform-decorators-legacy"
+    ]
+}

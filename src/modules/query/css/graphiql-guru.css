@@ -1,0 +1,327 @@
+.Graphiql-query-toolbar-settings:active,
+.Graphiql-query-toolbar-settings:focus,
+.Graphiql-query-toolbar-settings:hover {
+  background: #515151;
+  border-radius: 100%;
+}
+
+.CodeMirror {
+  font-family: 'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace !important;
+}
+
+.cm-s-dracula.CodeMirror,
+.cm-s-dracula .CodeMirror-gutters {
+  background: #000000 !important;
+}
+
+.CodeMirror div.CodeMirror-cursor {
+  border-left: 1px solid #f1f1f1;
+}
+
+.CodeMirror-cursor {
+  border-left-color: #ffffff !important;
+}
+
+.CodeMirror-cursor.result-window .CodeMirror-gutters {
+  width: 1px;
+  z-index: 0
+}
+
+.CodeMirror-vscrollbar {
+  bottom: 1px !important;
+}
+
+.CodeMirror {
+  font-size: 14px !important;
+}
+
+.CodeMirror-hints {
+  background: #000000;
+  border: 1px solid #ffffff;
+}
+
+.CodeMirror-hint {
+  color: #ffffff;
+  border-top: #000000;
+}
+
+.CodeMirror-hint-information .content {
+  color: #66d9ef;
+}
+
+.CodeMirror-hint-information .content .infoType {
+  color: #bd93f9;
+}
+
+.CodeMirror-hint-active {
+  background-color: #E10098 !important;
+}
+
+.graphiql-container .toolbar,
+.graphiql-container .toolbar button,
+.graphiql-container .variable-editor-title,
+.graphiql-container .footer,
+.graphiql-container .arg-name,
+.graphiql-container .keyword,
+.graphiql-container :not(pre)>code {
+  font-family: 'Biryani', sans-serif !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  font-weight: normal !important;
+}
+
+.graphiql-container .topBar,
+.graphiql-container .topBarWrap {
+  background: #000000;
+  color: #f1f1f1;
+}
+
+.graphiql-container .topBar {
+  border: none;
+  height: 40px;
+  padding: 13px;
+  position: relative;
+}
+
+.graphiql-container .execute-button svg {
+  fill: #f1f1f1;
+}
+
+.graphiql-container .toolbar-button,
+.graphiql-container .toolbar-button.error,
+.graphiql-container .toolbar>div>button {
+  background: none;
+  border-radius: 100%;
+  border: none;
+  color: #f1f1f1;
+  height: 30px;
+  line-height: 33px;
+  margin: 4px 1px;
+  outline: none;
+  text-align: center;
+  text-decoration: none;
+  transition: background ease 0.2s;
+  vertical-align: middle;
+  width: 30px;
+  padding: 1px 6px;
+  box-shadow: none;
+}
+
+.graphiql-container .execute-button {
+  background: none !important;
+  box-shadow: none;
+}
+
+.graphiql-container .execute-button:active,
+.graphiql-container .toolbar-button:active,
+.graphiql-container .toolbar-button.error:active,
+.graphiql-container .toolbar>div>button:active {
+  background: #cacaca !important;
+  box-shadow: none;
+}
+
+.graphiql-container .execute-button:hover,
+.graphiql-container .toolbar-button:hover,
+.graphiql-container .toolbar>div>button:hover,
+.graphiql-container .toolbar-button:focus,
+.graphiql-container .toolbar-button.error:focus,
+.graphiql-container .toolbar>div>button:focus {
+  background: #515151 !important;
+  box-shadow: none;
+  outline: none;
+}
+
+.graphiql-container .execute-button svg {
+  padding-left: 1px;
+}
+
+.graphiql-container .title {
+  display: none;
+}
+
+.graphiql-container .doc-explorer-title-bar {
+  height: auto;
+}
+
+.graphiql-container .execute-button-wrap {
+  margin: 0;
+}
+
+.graphiql-container .topBar input[type=checkbox]:hover {
+  background: #d8d8d8;
+}
+
+.graphiql-container .toolbar {
+  width: 100%;
+}
+
+.graphiql-container .toolbar .uk-display-inline-block {
+  float: right;
+  padding: 4px 5px;
+}
+
+.graphiql-container .toolbar>div {
+  display: inline;
+}
+
+.graphiql-container .variable-editor-title {
+  padding-left: 15px;
+}
+
+.graphiql-container .footer {
+  min-height: 29.556px;
+  font-size: 11px !important;
+}
+
+
+/* Input modal */
+
+.graphiql-container .uk-modal .uk-modal-dialog {
+  padding: 0;
+}
+
+.graphiql-container .uk-modal .uk-form-stacked .uk-form-label {
+  font-weight: normal;
+}
+
+.graphiql-container .uk-modal .uk-modal-dialog>.uk-close:first-child {
+  margin: 9px 15px 0;
+}
+
+.graphiql-container form {
+  padding: 0 15px;
+}
+
+.graphiql-container form>label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.graphiql-container form input,
+.graphiql-container form textarea {
+  margin-bottom: 15px !important;
+}
+
+.graphiql-container form textarea {
+  border: 1px solid #f1f1f1 !important;
+}
+
+.graphiql-container .docExplorerShow {
+  z-index: 0;
+  border: none !important;
+  padding: 2px 10px 0 10px;
+  margin: 5px 0;
+  color: #f1f1f1;
+  background: #000000;
+}
+
+.graphiql-container .uk-modal-footer {
+  margin: 0;
+  padding: 15px;
+}
+
+.graphiql-container .docExplorerShow:hover {
+  background: #515151;
+}
+
+.graphiql-container .docExplorerShow:before {
+  border-left: 2px solid #f1f1f1;
+  border-top: 2px solid #f1f1f1;
+}
+
+.graphiql-container .variable-editor-title {
+  background: rgba(0, 0, 0, 0);
+  color: #f1f1f1;
+  border: none;
+}
+
+.graphiql-container .variable-editor-title:hover {
+  background: #515151;
+}
+
+.graphiql-container .resultWrap {
+  border-left: 1px solid #252525;
+}
+
+.graphiql-container .footer {
+  padding: 4px 20px 4px 20px;
+  text-align: right;
+  font-weight: bold !important;
+  font-size: 13px;
+  margin-left: 14px;
+  color: #f1f1f1;
+  background: #000000;
+  border: none;
+}
+
+.graphiql-container .footer:before {
+  background: none;
+}
+
+.graphiql-container .footer .social-icon {
+  margin-left: 20px;
+}
+
+.graphiql-container .doc-explorer-contents,
+.graphiql-container .doc-explorer {
+  color: #f1f1f1;
+  background: #000000;
+}
+
+.graphiql-container .doc-explorer-contents,
+.graphiql-container .doc-explorer {
+  border-top: 1px solid #515151;
+  border-left: 1px solid #515151;
+}
+
+.graphiql-container .doc-explorer-contents {
+  border: 1px solid #515151;
+}
+
+.graphiql-container .search-box {
+  width: 100%;
+}
+
+.graphiql-container .search-box:hover {
+  background: #515151;
+}
+
+.graphiql-container .search-box>input {
+  color: #f1f1f1;
+  background: none;
+  padding: 6px 0 8px 0;
+  margin: 0 0 0 30px;
+  width: 95%;
+}
+
+.graphiql-container .search-box>input:hover,
+.graphiql-container .search-box>input:focus {
+  background: none;
+}
+
+.graphiql-container .search-box:before {
+  top: 2px;
+  left: 4px;
+}
+
+.graphiql-container .doc-category-title {
+  width: 100%;
+  margin-right: 0;
+}
+
+.graphiql-container .field-name {
+  color: #66d9ef;
+}
+
+.graphiql-container .arg-name {
+  color: #50fa7b
+}
+
+.graphiql-container :not(pre)>code,
+.graphiql-container .type-name {
+  color: #bd93f9
+}
+
+.graphiql-container .keyword {
+  color: #ff79c6;
+}

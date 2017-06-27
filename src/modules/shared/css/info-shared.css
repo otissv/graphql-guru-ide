@@ -1,0 +1,25 @@
+.Editor-query-info-label {
+  width: 100px;
+  display: inline-block;
+}
+
+.Editor-query-info-label,
+.Editor-query-info-body {
+  color: #f1f1f1;
+}
+
+.Editor-query-info-body {
+  padding: 15px;
+}
+
+.Editor-query-info-heading {
+  color: #9b9b9b;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.Editor-query-info-label {
+  font-weight: bold;
+  font-size: 12px;
+}

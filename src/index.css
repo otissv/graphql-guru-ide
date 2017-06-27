@@ -1,0 +1,77 @@
+.Select {
+  margin-bottom: 15px;
+}
+
+.Select-control {
+  background: #000000 !important;
+  border: none !important;
+  border-bottom: 1px solid #f1f1f1 !important;
+  border-radius: 0 !important;
+  outline: none;
+  color: #f1f1f1!important;
+}
+
+.Select-control:focus {
+  border: none;
+}
+
+.Select-arrow {
+  border-color: #f1f1f1 transparent transparent !important;
+  ;
+}
+
+.Select-arrow:hover {
+  border-color: #E10098 transparent transparent !important;
+}
+
+.Select-menu-outer .Select-menu {
+  background: #515151;
+  color: #f1f1f1!important;
+  border-radius: 0;
+  border: none;
+}
+
+.Select-value-label {
+  color: #f1f1f1 !important;
+}
+
+.Select-input {
+  width: 100% !important;
+}
+
+.Select-input>input {
+  color: #f1f1f1!important;
+  width: 100% !important;
+}
+
+.Select-placeholder {
+  color: #f1f1f1!important;
+}
+
+.Select-placeholder:hover,
+.Select-input:focus,
+.Select-input:hover {
+  background: #515151;
+}
+
+.cm-s-dracula.CodeMirror,
+.cm-s-dracula .CodeMirror-gutters {
+  background: #000000 !important;
+}
+
+.CodeMirror-cursor {
+  border-left-color: #fff !important;
+}
+
+.CodeMirror-cursor.result-window .CodeMirror-gutters {
+  width: 1px;
+  z-index: 0
+}
+
+.CodeMirror-vscrollbar {
+  bottom: 1px !important;
+}
+
+.CodeMirror {
+  font-size: 14px;
+}
