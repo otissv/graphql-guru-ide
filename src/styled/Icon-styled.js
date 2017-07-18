@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import Isvg from 'react-inlinesvg';
 
@@ -9,9 +8,11 @@ const Svg = styled(Isvg)`
   display: inline-block;
 
   &:hover {
-    fill: ${props => (props.hover ? props.theme.colors.primary : props.theme.colors.foreground)}
+    fill: ${props =>
+      props.hover ? props.theme.colors.primary : props.theme.colors.foreground}
   }
-}
+
+  ${props => props.styledIcon};
 `;
 
 export default Svg;

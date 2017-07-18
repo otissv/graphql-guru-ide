@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import autobind from 'class-autobind';
-import { connect } from '../../../remodule';
+import { connect } from '../../../store';
 import getClassMethods from '../../../helpers/get-class-methods';
 
 class PersistedContainer extends React.PureComponent {
@@ -11,8 +11,7 @@ class PersistedContainer extends React.PureComponent {
   }
 
   componentWillMount () {
-    const { getPersisted, setPersisted } = this.props;
-
+    // const { getPersisted, setPersisted } = this.props;
     // getPersisted().payload
     //   .then(response => setPersisted(response.data.Persisted))
     //   .catch(error => console.log(error));

@@ -1,5 +1,6 @@
 {
   "name": "@graphql-guru/ide",
+  "description": "Frontend IDE client for GraphQL Guru",
   "version": "0.0.1",
   "keywords": [
     "ide",
@@ -63,7 +64,7 @@
     "react-uikit-modal": "^2.0.4",
     "react-uikit-nav": "^2.0.2",
     "redux": "^3.5.2",
-    "redux-form": "^6.0.2",
+    "redux-form": "^6.8.0",
     "redux-pouchdb": "^0.1.1",
     "redux-thunk": "^2.1.0",
     "styled-components": "^2.1.0",

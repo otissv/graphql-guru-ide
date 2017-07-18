@@ -1,11 +1,12 @@
 import React from 'react';
 import axios from 'axios';
 import autobind from 'class-autobind';
-import { connect } from '../../../remodule';
+import { connect } from '../../../store';
 import getClassMethods from '../../../helpers/get-class-methods';
 import { buildClientSchema, parse, print } from 'graphql';
 import cuid from 'cuid';
 import { initialState } from '../redux/redux-query';
+import { initialState as formsInitialState } from '../../forms/redux/redux-forms';
 
 class GraphiQLContainer extends React.Component {
   constructor () {
@@ -14,9 +15,7 @@ class GraphiQLContainer extends React.Component {
 
     this.query = {
       id: null,
-      collection: '',
-      description: '',
-      name: '',
+      collection: { value: this.props.forms.saveForm.fields.collection.value },
       query: '',
       variables: ''
     };
@@ -67,7 +66,7 @@ class GraphiQLContainer extends React.Component {
     }
   }
 
-  fetchGraphQL (graphQLParams) {
+  fetcher (graphQLParams) {
     if (graphQLParams.query === '') {
       return Promise.resolve('Please provide a query.');
     } else {
@@ -123,10 +122,16 @@ class GraphiQLContainer extends React.Component {
           setSelectedQuery({
             ...selectedQuery,
             ...this.query,
+            query: graphQLParams.query,
             results
           });
-          addQueryHistoryItem({ [date]: history });
-          saveQueryHistory({ [date]: history });
+
+          addQueryHistoryItem({
+            [date]: history
+          });
+          saveQueryHistory({
+            [date]: history
+          });
 
           return response.data.data;
         })
@@ -149,9 +154,10 @@ class GraphiQLContainer extends React.Component {
   handleClickPrettify (event) {
     const { setSelectedQuery, selectedQuery } = this.props;
 
-    const query = this.query.query.trim() !== ''
-      ? this.query.query.trim()
-      : selectedQuery.query;
+    const query =
+      this.query.query.trim() !== ''
+        ? this.query.query.trim()
+        : selectedQuery.query;
 
     const prettyText = this.prettyQuery(query);
     setSelectedQuery({
@@ -168,14 +174,6 @@ class GraphiQLContainer extends React.Component {
     this.query.variables = variables;
   }
 
-  handleChangeQueryName (event) {
-    this.query.name = event.nativeEvent.target.value;
-  }
-
-  handleChangeQueryDescription (event) {
-    this.query.description = event.nativeEvent.target.value;
-  }
-
   handleChangeCollection (selectObject) {
     this.query.collection = selectObject;
     this.forceUpdate();
@@ -189,79 +187,51 @@ class GraphiQLContainer extends React.Component {
   handleClickRest () {
     this.query = {
       id: null,
-      collection: '',
-      description: '',
-      name: '',
+      collection: { value: '' },
       query: '',
       variables: ''
     };
 
-    this.props.resetQuery();
+    this.props.selectedQueryToInitialState();
     this.forceUpdate();
+    this.props.resetForm('saveForm');
   }
 
-  handleClickSave (event) {
+  openSaveModel () {
+    this.props.setForms({
+      saveForm: {
+        ...formsInitialState.forms.saveForm,
+        fields: {
+          ...formsInitialState.forms.saveForm.fields,
+          name: { value: this.props.selectedQuery.name },
+          collection: this.query.collection
+        }
+      }
+    });
+
+    this.props.setSaveModal(true);
+  }
+
+  handleClickSave (values) {
     const {
       addCollection,
       createQuery,
+      resetForm,
       selectedQuery,
       setSelectedQuery,
       setSaveModal
     } = this.props;
 
+    const { name, description } = values;
+
     const data = {
       ...this.query,
       collection: this.query.collection.value,
-      description: document.getElementById('save-description').value,
+      description,
+      name,
       id: selectedQuery.id || cuid(),
-      name: document.getElementById('save-name').value,
       results: JSON.stringify(selectedQuery.results)
     };
-
-    if (!this.validateSaveModule(data)) {
-      console.log(this.saveErrors);
-      console.log('validation error');
-    } else {
-      setSelectedQuery(data);
-      addCollection(data);
-      createQuery(data).payload
-        .then(response => {
-          if (response.data.ideQueryCreate.RESULTS_.result === 'failed') {
-          }
-        })
-        .catch(error => console.log(error));
-      setSaveModal(false);
-    }
-  }
-
-  validateSaveModule (data) {
-    const errors = {};
-    const { collection, name, query } = data;
-
-    if (collection == null || collection.trim() === '') {
-      errors.collection = true;
-    }
-
-    if (name == null || name.trim() === '') {
-      console.log(name);
-      errors.name = true;
-    }
-    if (query == null || query.trim() === '') {
-      errors.query = true;
-    }
-
-    return Object.keys(errors).length !== 0;
-  }
-
-  handleClickUpdate () {
-    const {
-      addCollection,
-      createQuery,
-      selectedQuery,
-      setSelectedQuery
-    } = this.props;
-
-    const data = { ...selectedQuery, ...this.query };
 
     setSelectedQuery(data);
     addCollection(data);
@@ -271,13 +241,33 @@ class GraphiQLContainer extends React.Component {
         }
       })
       .catch(error => console.log(error));
+    setSaveModal(false);
+    resetForm('saveForm');
   }
 
-  toggleSidebarQueryContent (event) {
-    const target = event.nativeEvent.target;
-    const parent = event.nativeEvent.target.parentNode;
-    const contentType = target.dataset.button || parent.dataset.button;
-    this.props.changeSidebarQueryContent(contentType);
+  validateSaveModule (data) {
+    const errors = {};
+    const { name } = data;
+
+    if (
+      this.query.collection.value == null ||
+      this.query.collection.value.trim() === ''
+    ) {
+      errors.collection = 'Please enter a collection name';
+    }
+
+    if (name == null || name.trim() === '') {
+      errors.name = 'Please enter a query name';
+    }
+    return Object.keys(errors).length !== 0 ? errors : null;
+  }
+
+  showSidebarQueryCollection (event) {
+    this.props.changeSidebarQueryContent('collection');
+  }
+
+  showSidebarQueryHistory (event) {
+    this.props.changeSidebarQueryContent('history');
   }
 
   handleQueryCollectionItemClick (event) {
@@ -292,7 +282,7 @@ class GraphiQLContainer extends React.Component {
 
     if (query.id !== selectedQuery.id) {
       this.query = {
-        collection: query.collection,
+        collection: { value: query.collection },
         description: query.description,
         id: query.id,
         name: query.name,
@@ -349,28 +339,13 @@ class GraphiQLContainer extends React.Component {
     return print(parse(query));
   }
 
-  setSaveModal (bool) {
-    this.props.setSaveModal(bool);
-  }
-
-  setInfoModal (bool) {
-    this.props.setInfoModal(bool);
-  }
-
   render () {
-    const {
-      component,
-      gqlTheme,
-      gqlThemePaper,
-      selectedQuery,
-      uiQuery
-    } = this.props;
+    const { component, gqlTheme, gqlThemePaper, selectedQuery } = this.props;
 
-    const query = selectedQuery &&
-      selectedQuery.query &&
-      selectedQuery.query.trim() !== ''
-      ? this.prettyQuery(selectedQuery.query)
-      : '';
+    const query =
+      selectedQuery && selectedQuery.query && selectedQuery.query.trim() !== ''
+        ? this.prettyQuery(selectedQuery.query)
+        : '';
 
     const variables = selectedQuery && selectedQuery.variables;
     const Component = component;
@@ -378,20 +353,17 @@ class GraphiQLContainer extends React.Component {
 
     const _response =
       JSON.stringify(selectedQuery.results.response, null, 2) || '';
-    const response = _response.trim() === '' ||
-      _response === '{}' ||
-      _response === '""'
-      ? null
-      : _response;
+    const response =
+      _response.trim() === '' || _response === '{}' || _response === '""'
+        ? null
+        : _response;
 
     return (
       <div
         className={`graphiql-theme ${gqlTheme} ${gqlThemePaper ? 'paper' : ''}`}
       >
         <Component
-          ui={uiQuery}
           {...getClassMethods(this)}
-          fetcher={this.fetchGraphQL}
           query={query}
           response={response}
           variables={variables}
@@ -406,9 +378,7 @@ class GraphiQLContainer extends React.Component {
           editorTheme={gqlTheme}
           resultTheme={gqlTheme}
           result={selectedQuery.results}
-          selectedQuery={selectedQuery}
-          values={this.query}
-          queryCollection={this.query.collection}
+          queryCollection={this.query.collection.value}
         />
       </div>
     );

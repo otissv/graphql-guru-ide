@@ -87,7 +87,7 @@ export class GetPersisted {
   }
 }
 
-export class ResetPersisted {
+export class selectedPersistedToInitialState {
   action () {
     return {
       type: 'SetSelectedPersisted',

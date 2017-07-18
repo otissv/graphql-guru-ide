@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import InfoModal from '../../shared/components/Info-modal-shared';
 import SaveModal from '../../shared/components/Save-modal-shared';
 import EditorSidebar from '../../shared/components/Sidebar-shared';
-import EditorSettings from '../../settings/components/Editor-settings';
+import Settings from '../../settings/containers/container-settings';
 import '../../../../node_modules/graphiql/graphiql.css';
 import '../css/graphiql-guru.css';
 import IconButton from '../../../styled/components/IconButton';
@@ -36,34 +36,6 @@ const ToolbarHeader = styled.h1`
   float: left;
 `;
 
-const GraphiQLButton = styled.button`
-  background: none;
-  border-radius: ${props => props.theme.borders.radius.circle};
-  border: none;
-  color: ${props => props.theme.colors.foreground};
-  float: right;
-  height: 30px;
-  line-height: 0px;
-  outline: none;
-  width: 30px;
-
-  &:hover {
-    background: ${props => props.theme.colors.hoverBackground};
-  }
-
-  &:active {
-    border-radius: ${props => props.theme.borders.radius};
-  }
-
-  &:focus {
-    background: ${props => props.theme.colors.focusBackground};
-  }
-
-  &:visited {
-    border-radius: ${props => props.theme.borders.radius};
-  }
-`;
-
 const Container = styled.div`
   position: absolute;
   bottom: 30px;
@@ -85,8 +57,8 @@ class CustomGraphiQL extends React.Component {
     }));
   }
 
-  setSaveModal () {
-    this.props.setSaveModal(true);
+  openSaveModel () {
+    this.props.openSaveModel();
   }
 
   setInfoModal () {
@@ -99,15 +71,12 @@ class CustomGraphiQL extends React.Component {
 
   render () {
     const {
+      forms,
       handleChangeCollection,
       handleChangeInputCollection,
-      handleChangeQueryDescription,
-      handleChangeQueryName,
-      handleClickCancel,
       handleClickPrettify,
       handleClickRest,
       handleClickSave,
-      handleClickUpdate,
       handleQueryCollectionItemClick,
       handleQueryHistoryItemClick,
       queryCollection,
@@ -115,13 +84,13 @@ class CustomGraphiQL extends React.Component {
       queryHistoryAll,
       result,
       selectedQuery,
-      sidebarQueryContent,
-      toggleSidebarQueryContent,
-      setSaveModal,
       setInfoModal,
-      setSettingsModal,
-      values,
-      ui
+      setSaveModal,
+      sidebarQueryContent,
+      showSidebarQueryHistory,
+      showSidebarQueryCollection,
+      uiQuery,
+      validateSaveModule
     } = this.props;
 
     const { status, time } = result;
@@ -133,14 +102,14 @@ class CustomGraphiQL extends React.Component {
           history={queryHistoryAll}
           onCollectionItemClick={handleQueryCollectionItemClick}
           onHistoryItemClick={handleQueryHistoryItemClick}
-          toggle={toggleSidebarQueryContent}
+          showSidebarQueryHistory={showSidebarQueryHistory}
+          showSidebarQueryCollection={showSidebarQueryCollection}
           type={sidebarQueryContent}
         />
         <Toolbar>
           <ToolbarHeader>
-            {selectedQuery.name || 'Unnamed'}
-            {' '}
-            {selectedQuery.id ? `- ${selectedQuery.id}` : null}
+            {selectedQuery.name || 'Unnamed'} {' '}
+            {selectedQuery.id ? `- ${selectedQuery.id}` : null}{' '}
           </ToolbarHeader>
           <SettingButton>
             <IconButton src={settingsIcon} onClick={this.setSettingsModal} />
@@ -151,17 +120,15 @@ class CustomGraphiQL extends React.Component {
           <GraphiQL {...this.props}>
             <GraphiQL.Toolbar id="graphiql-query-editor">
               <IconButton onClick={handleClickPrettify} src={prettifyIcon} />
-              <IconButton onClick={this.setSaveModal} src={saveIcon} />
+              <IconButton onClick={this.openSaveModel} src={saveIcon} />
               <IconButton onClick={handleClickRest} src={refreshIcon} />
               <IconButton onClick={this.setInfoModal} src={infoIcon} />
             </GraphiQL.Toolbar>
 
             <GraphiQL.Footer>
-              {status ? ' Status:' : null}
-              {' '}
+              {status ? ' Status:' : null} {' '}
               <span style={{ color: '#E10098' }}>{status}</span>
-              {time ? ' Time:' : null}
-              {' '}
+              {time ? ' Time:' : null} {' '}
               <span style={{ color: '#E10098' }}>
                 {time ? `${time}  ms` : null}
               </span>
@@ -170,31 +137,26 @@ class CustomGraphiQL extends React.Component {
         </Container>
 
         <SaveModal
-          setSaveModal={setSaveModal}
-          opened={ui.isSaveModalOpen}
+          opened={uiQuery.isSaveModalOpen}
           collectionLabels={this.collectionLabels()}
-          handleClickCancel={handleClickCancel}
           handleClickSave={handleClickSave}
-          values={values}
+          forms={forms}
+          setSaveModal={setSaveModal}
           handleChangeCollection={handleChangeCollection}
           handleChangeInputCollection={handleChangeInputCollection}
-          handleChangeQueryDescription={handleChangeQueryDescription}
-          handleChangeQueryName={handleChangeQueryName}
           queryCollection={queryCollection}
+          validation={validateSaveModule}
+          selectedQuery={selectedQuery}
         />
 
         <InfoModal
           setInfoModal={setInfoModal}
-          opened={ui.isInfoModalOpen}
-          handleClickCancel={handleClickCancel}
+          opened={uiQuery.isInfoModalOpen}
           result={result}
           selectedQuery={selectedQuery}
         />
 
-        <EditorSettings
-          setSettingsModal={setSettingsModal}
-          opened={ui.isSettingsModalOpen}
-        />
+        <Settings />
       </div>
     );
   }

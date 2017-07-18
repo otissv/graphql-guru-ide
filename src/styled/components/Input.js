@@ -49,7 +49,6 @@ export default class Input extends PureComponent {
     if (isWidth('xsmall')) {
       mWidth.width = theme.mWidth.xsmall;
     }
-
     return <InputStyled {...this.props} {...size} {...mWidth} {...context} />;
   }
 }

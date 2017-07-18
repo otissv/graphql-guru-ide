@@ -1,12 +1,21 @@
 import { IDE_ROUTE } from '../../../constants/routes-constants';
 import { query } from '../../../helpers/async-query';
 
-export const register = 'collection';
+export const register = 'queryCollection';
 import * as reduxQuery from './redux-query';
 
 export const initialState = {
   queryCollectionAll: {}
 };
+
+export class QueryCollectionAllReducer {
+  reducer (state, action) {
+    return {
+      ...state,
+      queryCollectionAll: { ...state.queryCollectionAll, ...action.payload }
+    };
+  }
+}
 
 export class GetQueries {
   action () {
@@ -52,13 +61,22 @@ export class AddCollection {
       }
     };
 
-    return { type: 'AddCollection', payload: collection };
+    return { type: 'QueryCollectionAllReducer', payload: collection };
+  }
+}
+
+export class QueryCollectionsToInitialState {
+  action () {
+    return {
+      type: 'QueryCollectionsToInitialState',
+      payload: {}
+    };
   }
 
   reducer (state, action) {
     return {
       ...state,
-      queryCollectionAll: { ...state.queryCollectionAll, ...action.payload }
+      queryCollectionAll: initialState.queryCollectionAll
     };
   }
 }
@@ -88,10 +106,6 @@ export class CreateCollections {
       };
     }, {});
 
-    return { type: 'CreateCollections', payload };
-  }
-
-  reducer (state, action) {
-    return { ...state, queryCollectionAll: action.payload };
+    return { type: 'QueryCollectionAllReducer', payload };
   }
 }

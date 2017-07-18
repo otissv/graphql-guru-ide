@@ -1,6 +1,6 @@
 import React from 'react';
 import autobind from 'class-autobind';
-import { connect } from '../../../remodule';
+import { connect } from '../../../store';
 import getClassMethods from '../../../helpers/get-class-methods';
 
 class SchemaContainer extends React.Component {

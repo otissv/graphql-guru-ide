@@ -1,9 +1,13 @@
-import React from 'react';
 import styled from 'styled-components';
 
 const ButtonSquared = styled.button`
   background: none;
-  border-radius: ${props => (props.radius === 'circle' ? props.theme.borders.radius.circle : props.radius === 'rounded' ? props.theme.borders.radius.rounded : props.theme.borders.radius.none)};
+  border-radius: ${props =>
+    props.radius === 'circle'
+      ? props.theme.borders.radius.circle
+      : props.radius === 'rounded'
+        ? props.theme.borders.radius.rounded
+        : props.theme.borders.radius.none};
   border: none;
   color: ${props => props.theme.colors.foreground};
   cursor: pointer;
@@ -26,6 +30,8 @@ const ButtonSquared = styled.button`
   &:focus {
     background: ${props => props.theme.colors.focusBackground};
   }
+
+  ${props => props.styledButtonSquared};
 `;
 
 export default ButtonSquared;

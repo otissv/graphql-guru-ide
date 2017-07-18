@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import IconButton from '../../../styled/components/IconButton';
 import '../css/style-persisted.css';
 import runIcon from '../../../icons/controller-play.svg';
-import cogIcon from '../../../icons/cog.svg';
 import prettifyIcon from '../../../icons/flash.svg';
 import refreshIcon from '../../../icons/ccw.svg';
 import saveIcon from '../../../icons/save.svg';
@@ -17,9 +16,7 @@ const Toolbar = styled.ul`
   margin: 0;
 `;
 
-const ToolbarItem = styled.li`
-  display: inline;
-`;
+const ToolbarItem = styled.li`display: inline;`;
 
 export default class Persisted extends React.PureComponent {
   constructor () {

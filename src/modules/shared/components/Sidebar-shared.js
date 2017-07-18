@@ -15,7 +15,7 @@ const Sidebar = styled.div`
   margin-right: 15px;
 `;
 
-const CollectionButton = styled.button`
+const HistoryButton = styled.button`
   width: 50%;
   height: 40px;
   border: none;
@@ -27,11 +27,11 @@ const CollectionButton = styled.button`
   transition: background ease 0.2s;
 
   &:hover {
-  background: ${props => props.theme.colors.secondary};
-}
+    background: ${props => props.theme.colors.secondary};
+  }
 `;
 
-const HistoryButton = CollectionButton.extend`
+const CollectionButton = HistoryButton.extend`
   &:before {
     content: '';
     border-bottom: ${props => props.theme.borders.thickPrimary};
@@ -40,10 +40,10 @@ const HistoryButton = CollectionButton.extend`
     left: 0;
     width: 50%;
     transform: translateX(0);
-    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     transition-duration: .3s;
   }
-  
+
   &.Editor-sidebar-button-active:before {
     transform: translateX(100%);
   }
@@ -51,11 +51,11 @@ const HistoryButton = CollectionButton.extend`
 
 const Info = styled.div`
   padding: 0 20px 20px 20px;
-  >p {
+  > p {
     font-size: 13px;
   }
 
-  >pre {
+  > pre {
     font-size: 13px;
   }
 `;
@@ -69,9 +69,11 @@ const List = styled.ul`
 const ListItem = styled.li`
   padding: 4px 20px;
   transition: background ease 0.2s;
+  cursor: pointer;
 
   &:hover {
-  background: ${props => props.theme.colors.secondary};
+    background: ${props => props.theme.colors.secondary};
+  }
 `;
 
 const ListItemLink = styled.a`
@@ -117,7 +119,7 @@ const AccordionItem = styled.li`
   overflow: hidden;
   cursor: pointer;
   font-size: 13px;
-  >ul {
+  > ul {
     padding-left: 10px;
   }
 `;
@@ -148,13 +150,15 @@ export default class EditorSidebar extends React.Component {
       });
 
     return collectionKeys.length === 0
-      ? <p style={{ padding: '10px' }}>Save queries to create  collections.</p>
-      : collectionKeys.map(key => (
+      ? <p style={{ padding: '10px' }}>Save queries to create collections.</p>
+      : collectionKeys.map(key =>
           <AccordionItem key={key} data-collection={key}>
-            <AccordionButton>{key}</AccordionButton>
+            <AccordionButton>
+              {key}
+            </AccordionButton>
             {queries(collections[key])}
           </AccordionItem>
-        ));
+        );
   }
 
   historyList () {
@@ -165,8 +169,8 @@ export default class EditorSidebar extends React.Component {
       ? <Info key="info">
           <p>Use the query editor to left to send queries to the server.</p>
           <p>
-            Queries typically start with a {`"{"`} character.
-            Lines that start with a # are ignored.
+            Queries typically start with a {`"{"`} character. Lines that start
+            with a # are ignored.
           </p>
           <p>An example query might look like:</p>
           <pre>
@@ -175,18 +179,17 @@ export default class EditorSidebar extends React.Component {
     id
     firstName
     lastName
-  }`}
+  }
+}`}
           </pre>
 
           <p>
-            Keyboard shortcuts:<br /><br />
-
-            Run Query: Ctrl-Enter
-            or press the play button
-            above the query  editor.<br /><br />
-
-            Auto Complete: Ctrl-Space
-            or just start typing.`}
+            Keyboard shortcuts:<br />
+            <br />
+            Run Query: Ctrl-Enter or press the play button above the query
+            editor.<br />
+            <br />
+            Auto Complete: Ctrl-Space or just start typing.`}
           </p>
         </Info>
       : historyKeys.reverse().map(key => {
@@ -205,26 +208,29 @@ export default class EditorSidebar extends React.Component {
   render () {
     const collections = this.collectionList();
     const history = this.historyList();
-    const { type, toggle } = this.props;
+    const {
+      showSidebarQueryCollection,
+      showSidebarQueryHistory,
+      type
+    } = this.props;
 
     return (
       <Sidebar>
-        <CollectionButton
+        <HistoryButton
           className={type === 'history' ? 'Editor-sidebar-button-active' : ''}
-          data-button="history"
-          onClick={toggle}
+          onClick={showSidebarQueryHistory}
         >
           <Icon src={historyIcon} />
-        </CollectionButton>
-        <HistoryButton
+        </HistoryButton>
+        <CollectionButton
           className={
             type === 'collection' ? 'Editor-sidebar-button-active' : ''
           }
-          data-button="collection"
-          onClick={toggle}
+          onClick={showSidebarQueryCollection}
         >
           <Icon src={folderIcon} />
-        </HistoryButton>
+        </CollectionButton>
+
         <Accordion
           type="side"
           style={{

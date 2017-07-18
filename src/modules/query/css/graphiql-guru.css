@@ -19,7 +19,7 @@
 }
 
 .CodeMirror-cursor {
-  border-left-color: #ffffff !important;
+  border-left-color: #f1f1f1 !important;
 }
 
 .CodeMirror-cursor.result-window .CodeMirror-gutters {
@@ -37,11 +37,11 @@
 
 .CodeMirror-hints {
   background: #000000;
-  border: 1px solid #ffffff;
+  border: 1px solid #f1f1f1;
 }
 
 .CodeMirror-hint {
-  color: #ffffff;
+  color: #f1f1f1;
   border-top: #000000;
 }
 
@@ -55,6 +55,19 @@
 
 .CodeMirror-hint-active {
   background-color: #E10098 !important;
+}
+
+.cm-invalidchar {
+  color: #f1f1f1;
+}
+
+.graphiql-container .docExplorerWrap {
+  display: none;
+  width: 401px;
+  position: fixed;
+  right: 0px;
+  bottom: 70px;
+  top: 80px;
 }
 
 .graphiql-container .toolbar,
@@ -268,14 +281,19 @@
   background: #000000;
 }
 
-.graphiql-container .doc-explorer-contents,
 .graphiql-container .doc-explorer {
-  border-top: 1px solid #515151;
-  border-left: 1px solid #515151;
+  border-width: 1px;
+  border-style: solid;
+  border-top-color: #f1f1f1;
+  border-left-color: #f1f1f1;
+  border-right-color: #f1f1f1;
 }
 
 .graphiql-container .doc-explorer-contents {
-  border: 1px solid #515151;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #f1f1f1;
+  border-top-color: #515151;
 }
 
 .graphiql-container .search-box {

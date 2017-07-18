@@ -1,90 +1,126 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import autobind from 'class-autobind';
 import { Creatable } from 'react-select';
 import Modal from '../../../styled/components/Modal';
 import 'react-select/dist/react-select.css';
-import Form from '../../../styled/Form-styled';
+import ReduxForm from '../../shared/components/ReduxForm-shared';
 import FormLabel from '../../../styled/FormLabel-styled';
 import Input from '../../../styled/Input-styled';
 import FormRow from '../../../styled/FormRow-styled';
+import FormError from '../../../styled/FormError-styled';
 import Textarea from '../../../styled/Textarea-styled';
+import Button from '../../../styled/Button-styled';
 import cuid from 'cuid';
 
-export default class SaveModal extends React.PureComponent {
+const footerStyled = `
+      display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+`;
+
+export default class SaveModal extends PureComponent {
   constructor (props) {
     super(...arguments);
     autobind(this);
-
-    this.state = {
-      name: this.props.values.name
-    };
   }
 
-  onNameChange (event) {
-    const value = event.target.value;
-    this.setState({ name });
-    this.props.handleChangeQueryName(value);
+  handleOnClickCancel (event) {
+    event.preventDefault();
+    this.props.setSaveModal(false);
   }
 
   render () {
     const {
       collectionLabels,
+      forms,
       handleChangeCollection,
       handleChangeInputCollection,
-      handleChangeQueryDescription,
       handleClickSave,
-      queryCollection,
       opened,
-      values,
-      setSaveModal
+      queryCollection,
+      selectedQuery,
+      setSaveModal,
+      validation
     } = this.props;
 
     return (
       <Modal
-        setVisibility={setSaveModal}
+        cancel={{ onClick: this.handleOnClickCancel }}
         id={cuid()}
         header="Save Query"
-        cancel={{ body: 'Cancel' }}
-        submit={{ onClick: handleClickSave, body: 'Save' }}
         opened={opened}
+        setVisibility={setSaveModal}
       >
-        <Form>
+        <ReduxForm
+          name="saveForm"
+          onSubmit={handleClickSave}
+          validation={validation}
+        >
           <FormRow>
-            <FormLabel htmlFor="name">
-              Name
-            </FormLabel>
+            <FormLabel htmlFor="name">Name</FormLabel>
+
             <Input
-              id="save-name"
-              onChange={this.onNameChange}
-              value={this.state.name}
+              name="name"
+              value={forms.saveForm.fields.name.value || selectedQuery.name}
             />
+
+            <FormError
+              display={forms.saveForm.fields.name.error ? 'block' : 'none'}
+            >
+              {forms.saveForm.fields.name.error}
+            </FormError>
           </FormRow>
 
           <FormRow>
-            <FormLabel htmlFor="name">
-              Collection
-            </FormLabel>
+            <FormLabel htmlFor="name">Collection</FormLabel>
+
             <Creatable
-              value={queryCollection}
-              name="save-collections"
               options={collectionLabels}
+              value={queryCollection}
               onInputChange={handleChangeInputCollection}
               onChange={handleChangeCollection}
+              name="collection"
             />
+
+            <FormError
+              display={
+                forms.saveForm.fields.collection.error ? 'block' : 'none'
+              }
+            >
+              {forms.saveForm.fields.name.error}
+            </FormError>
           </FormRow>
 
           <FormRow>
-            <FormLabel htmlFor="name">
-              Query Description (optional)
-            </FormLabel>
+            <FormLabel htmlFor="name">Query Description (optional)</FormLabel>
+
             <Textarea
-              id="save-description"
+              name="description"
+              value={
+                forms.saveForm.fields.description.value ||
+                selectedQuery.description
+              }
               placeholder="Adding a description makes your docs better"
-              onChange={handleChangeQueryDescription}
-              defaultValue={values.description}
             />
+
+            <FormError
+              display={
+                forms.saveForm.fields.description.error ? 'block' : 'none'
+              }
+            >
+              {forms.saveForm.fields.description.error}
+            </FormError>
           </FormRow>
-        </Form>
+
+          <FormRow styledFormRow={footerStyled}>
+            <Button onClick={this.handleOnClickCancel}>Cancel</Button>
+
+            <Button primary type="submit">
+              Save
+            </Button>
+          </FormRow>
+        </ReduxForm>
       </Modal>
     );
   }

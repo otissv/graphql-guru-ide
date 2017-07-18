@@ -3,7 +3,7 @@ export const register = 'graphiql';
 export const initialState = {
   gqlTheme: 'dracula',
   gqlThemePaper: false,
-  sidebarQueryContent: 'collection'
+  sidebarQueryContent: 'history'
 };
 
 export class ChangeSidebarQueryContent {

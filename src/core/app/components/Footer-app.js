@@ -3,7 +3,6 @@ import React from 'react';
 import autobind from 'class-autobind';
 import styled from 'styled-components';
 import Input from '../../../styled/components/Input';
-import Icon from '../../../styled/components/Icon';
 
 const FooterBar = styled.div`
   position: fixed;
@@ -18,8 +17,7 @@ const FooterBar = styled.div`
   text-align: center;
 `;
 
-const Label = styled.label`
-`;
+const Label = styled.label``;
 
 const Error = styled.span`
   color: #f00;
@@ -73,16 +71,14 @@ export default class Footer extends React.Component {
   render () {
     const status = this.props.isConnected
       ? null
-      : <Error className="GraphQL-connected">
-          Schema not found
-        </Error>;
+      : <Error className="GraphQL-connected">Schema not found</Error>;
 
     return (
       <FooterBar>
         <Label>GraphQL Endpoint:</Label>
         <Input
           size="small"
-          width="300px"
+          styledInput="width: 300px"
           onChange={this.handleChangeEndpoint}
           value={this.props.endpoint}
         />

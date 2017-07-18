@@ -6,8 +6,7 @@ export const register = 'query';
 export const initialState = {
   uiQuery: {
     isSaveModalOpen: false,
-    isInfoModalOpen: false,
-    isSettingsModalOpen: false
+    isInfoModalOpen: false
   },
   selectedQuery: {
     id: null,
@@ -48,19 +47,6 @@ export class SetInfoModal {
     return {
       ...state,
       uiQuery: { ...state.uiQuery, isInfoModalOpen: action.payload }
-    };
-  }
-}
-
-export class setSettingsModal {
-  action (bool) {
-    return { type: 'setSettingsModal', payload: bool };
-  }
-
-  reducer (state, action) {
-    return {
-      ...state,
-      uiQuery: { ...state.uiQuery, isSettingsModalOpen: action.payload }
     };
   }
 }
@@ -148,13 +134,6 @@ export class GetQueries {
     });
 
     return { type: 'GetQueries', payload: request };
-  }
-}
-
-export class ResetQuery {
-  action () {
-    console.log(initialState.selectedQuery);
-    return { type: 'SetSelectedQuery', payload: initialState.selectedQuery };
   }
 }
 
