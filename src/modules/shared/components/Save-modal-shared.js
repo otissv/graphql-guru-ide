@@ -27,7 +27,7 @@ export default class SaveModal extends PureComponent {
 
   handleOnClickCancel (event) {
     event.preventDefault();
-    this.props.setSaveModal(false);
+    this.props.setSaveModel(false);
   }
 
   render () {
@@ -40,7 +40,7 @@ export default class SaveModal extends PureComponent {
       opened,
       queryCollection,
       selectedQuery,
-      setSaveModal,
+      setSaveModel,
       validation
     } = this.props;
 
@@ -50,7 +50,7 @@ export default class SaveModal extends PureComponent {
         id={cuid()}
         header="Save Query"
         opened={opened}
-        setVisibility={setSaveModal}
+        setVisibility={setSaveModel}
       >
         <ReduxForm
           name="saveForm"
@@ -114,7 +114,12 @@ export default class SaveModal extends PureComponent {
           </FormRow>
 
           <FormRow styledFormRow={footerStyled}>
-            <Button onClick={this.handleOnClickCancel}>Cancel</Button>
+            <Button
+              styledButton="margin-right: 10px;"
+              onClick={this.handleOnClickCancel}
+            >
+              Cancel
+            </Button>
 
             <Button primary type="submit">
               Save

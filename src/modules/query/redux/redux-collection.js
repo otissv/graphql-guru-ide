@@ -17,32 +17,6 @@ export class QueryCollectionAllReducer {
   }
 }
 
-export class GetQueries {
-  action () {
-    const request = query({
-      url: IDE_ROUTE,
-      actions: ['ideQueryFindAll'],
-      query: `query {
-        ideQueryFindAll {
-          id
-          collection
-          created
-          description
-          name
-          query
-          variables
-          results
-          RESULTS_ {
-            result
-          }
-        }
-      }`
-    });
-
-    return { type: 'GetQueries', payload: request };
-  }
-}
-
 export class UpdateHistory {
   action (history) {
     return { type: 'UpdateHistory', payload: history };
@@ -91,13 +65,7 @@ export class CreateCollections {
         [item.collection]: {
           ...itemCollection,
           [item.id]: {
-            id: item.id,
-            collection: item.collection,
-            created: item.created,
-            name: item.name,
-            precache: item.precache,
-            query: item.query,
-            variables: item.variables,
+            ...item,
             results: item.results
               ? JSON.parse(JSON.parse(JSON.parse(item.results)))
               : reduxQuery.initialState.results

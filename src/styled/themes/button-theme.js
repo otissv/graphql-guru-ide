@@ -1,11 +1,11 @@
-export default function button ({ borders, colors }) {
+export default function button ({ borders, colors, fonts }) {
   return {
     backgroundColor: colors.background,
     border: `1px solid ${colors.background}`,
     boxSizing: 'border-box',
     color: colors.foreground,
     display: 'inline-block',
-    fontSize: '14px',
+    fontSize: fonts.size.default,
     font: 'inherit',
     lineHeight: '38px',
     margin: 0,

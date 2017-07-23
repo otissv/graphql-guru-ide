@@ -1,6 +1,6 @@
 import React from 'react';
 import autobind from 'class-autobind';
-import PersistedQueryEditor from './Query-persisted';
+import QueryPersistedEditor from './Query-persisted';
 import PersistedResultEditor from './Result-persisted';
 import styled from 'styled-components';
 import IconButton from '../../../styled/components/IconButton';
@@ -10,13 +10,77 @@ import prettifyIcon from '../../../icons/flash.svg';
 import refreshIcon from '../../../icons/ccw.svg';
 import saveIcon from '../../../icons/save.svg';
 import infoIcon from '../../../icons/info.svg';
+import settingsIcon from '../../../icons/cog.svg';
+import EditorSidebar from '../../shared/components/Sidebar-shared';
 
-const Toolbar = styled.ul`
-  padding: 0 20px;
+const EditorToolbar = styled.ul`
+  position: absolute;
+  left: 230px;
+  top: 40px;
+  padding: 0 20px 0 0;
   margin: 0;
 `;
 
-const ToolbarItem = styled.li`display: inline;`;
+const EditorToolbarItem = styled.li`display: inline;`;
+
+const Toolbar = styled.div`
+  padding: 5px 10px;
+  height: 40px;
+  position: absolute;
+
+  left: 230px;
+  right: 0;
+`;
+
+const ToolbarHeader = styled.h1`
+  font-weight: bold;
+  font-size: 12px;
+  color: ${props => props.theme.colors.primary};
+  float: left;
+`;
+
+const Container = styled.div`
+  position: absolute;
+  bottom: 30px;
+  left: 230px;
+  right: 0;
+  top: 80px;
+`;
+
+const SettingButton = styled.div`
+  float: right;
+  transform: translateY(-4px);
+`;
+
+const HistoryInfo = props =>
+  <div>
+    <p>Use the query editor to left to send queries to the server.</p>
+    <p>
+      Queries typically start with a {`"{"`} character. Lines that start with a
+      # are ignored.
+    </p>
+    <p>An example query might look like:</p>
+    <pre>
+      {`}
+  User {
+    id
+    firstName
+    lastName
+  }
+}`}
+    </pre>
+
+    <p>
+      Keyboard shortcuts:<br />
+      <br />
+      Run Query: Ctrl-Enter or press the play button above the query editor.<br
+      />
+      <br />
+      Auto Complete: Ctrl-Space or just start typing.`}
+    </p>
+  </div>;
+
+const CollectionInfo = props => <div>Save queries to create collections</div>;
 
 export default class Persisted extends React.PureComponent {
   constructor () {
@@ -30,71 +94,101 @@ export default class Persisted extends React.PureComponent {
     const {
       fetchGraphql,
       handleInfoClick,
-      handleOnChangeQuery,
+      handleOnChangePersisted,
       handleOnChangeRequest,
       handlePrettifyClick,
       handleResetClick,
       handleSaveClick,
-      selectedPersisted
+      selectedPersisted,
+      persistedCollectionAll,
+      persistedHistoryAll,
+      handlePersistedCollectionItemClick,
+      handlePersistedHistoryItemClick,
+      showSidebarPersistedHistory,
+      showSidebarPersistedCollection,
+      sidebarPersistedContent
     } = this.props;
 
     return (
       <div className="Persisted">
         <div>
+          <EditorSidebar
+            collections={persistedCollectionAll}
+            history={persistedHistoryAll}
+            onCollectionItemClick={handlePersistedCollectionItemClick}
+            onHistoryItemClick={handlePersistedHistoryItemClick}
+            showSidebarHistory={showSidebarPersistedHistory}
+            showSidebarCollection={showSidebarPersistedCollection}
+            type={sidebarPersistedContent}
+            historyInfo={<HistoryInfo />}
+            collectionInfo={<CollectionInfo />}
+          />
           <Toolbar>
-            <ToolbarItem className="Editor-toolbar-item">
+            <ToolbarHeader>
+              {selectedPersisted.name || 'Unnamed'} {' '}
+              {selectedPersisted.id ? `- ${selectedPersisted.id}` : null}{' '}
+            </ToolbarHeader>
+            <SettingButton>
+              <IconButton src={settingsIcon} onClick={this.setSettingsModal} />
+            </SettingButton>
+          </Toolbar>
+
+          <EditorToolbar>
+            <EditorToolbarItem className="Editor-toolbar-item">
               <IconButton
-                title="Execute Query"
+                title="Execute Persisted"
                 onClick={fetchGraphql}
                 src={runIcon}
               />
-            </ToolbarItem>
-            <ToolbarItem className="Editor-toolbar-item">
+            </EditorToolbarItem>
+            <EditorToolbarItem className="Editor-toolbar-item">
               <IconButton
-                title="Prettify Query"
+                title="Prettify Persisted"
                 src={prettifyIcon}
                 onClick={handlePrettifyClick}
               >
                 <i className="Settings-icon icon-magic"></i>
               </IconButton>
-            </ToolbarItem>
-            <ToolbarItem className="Editor-toolbar-item">
+            </EditorToolbarItem>
+            <EditorToolbarItem className="Editor-toolbar-item">
               <IconButton
-                title="Save Query"
+                title="Save Persisted"
                 src={saveIcon}
                 onClick={handleSaveClick}
               >
                 <i className="Settings-icon icon-floppy"></i>
               </IconButton>
-            </ToolbarItem>
-            <ToolbarItem className="Editor-toolbar-item">
+            </EditorToolbarItem>
+            <EditorToolbarItem className="Editor-toolbar-item">
               <IconButton
-                title="Reset Query"
+                title="Reset Persisted"
                 src={refreshIcon}
                 onClick={handleResetClick}
               >
                 <i className="Settings-icon icon-arrows-ccw"></i>
               </IconButton>
-            </ToolbarItem>
-            <ToolbarItem className="Editor-toolbar-item">
+            </EditorToolbarItem>
+            <EditorToolbarItem className="Editor-toolbar-item">
               <IconButton
-                title="Query Information"
+                title="Persisted Information"
                 src={infoIcon}
                 onClick={handleInfoClick}
               >
                 <i className="Settings-icon icon-info-circled"></i>
               </IconButton>
-            </ToolbarItem>
-          </Toolbar>
+            </EditorToolbarItem>
+          </EditorToolbar>
         </div>
-        <PersistedQueryEditor
-          selectedPersisted={selectedPersisted}
-          handleOnChange={handleOnChangeQuery}
-        />
-        <PersistedResultEditor
-          selectedPersisted={selectedPersisted}
-          handleOnChange={handleOnChangeRequest}
-        />
+        <Container>
+          <QueryPersistedEditor
+            selectedPersisted={selectedPersisted}
+            handleOnChange={handleOnChangePersisted}
+          />
+          <PersistedResultEditor
+            selectedPersisted={selectedPersisted}
+            handleOnChange={handleOnChangeRequest}
+          />
+        </Container>
       </div>
     );
   }

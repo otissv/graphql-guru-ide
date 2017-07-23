@@ -1,10 +1,14 @@
 import { injectGlobal } from 'styled-components';
 import normalizeStyled from 'normalize-styled';
 
-export default function base ({ colors }) {
+export default function base ({ colors, fonts }) {
   return injectGlobal`
     ${normalizeStyled}
   
+    html {
+      line-height: ${fonts.lineHeight}
+    }
+    
     html,
     body,
     pre {
@@ -27,12 +31,9 @@ export default function base ({ colors }) {
     h6,
     a,
     button {
-      font-family: 'Biryani', sans-serif;
-      text-rendering: optimizeLegibility !important;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
-      font-size: 14px;
+      font-family: ${fonts.family.serif};
+      ${fonts.smooth}
+      font-size: ${fonts.size.default}
     }
 
     * {
@@ -41,6 +42,12 @@ export default function base ({ colors }) {
 
     ::selection {
       background: ${colors.primary};
+    }
+
+    pre {
+      font-size: ${fonts.size.small};
+      font-family: ${fonts.family.code};
+      line-height: 1.3;
     }
 
     a, area, button, input, label, select, summary, textarea {

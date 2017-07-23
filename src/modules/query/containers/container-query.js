@@ -23,25 +23,17 @@ class GraphiQLContainer extends React.Component {
 
   componentWillMount () {
     const {
-      endpoint,
       createCollections,
       createQueryHistory,
-      getGraphqlSchema,
       getQueries,
-      setGraphqlSchema,
-      setQueryResultsStatus
+      selectedQuery
     } = this.props;
+
+    const endpoint = selectedQuery.endpoint;
 
     if (endpoint && endpoint.trim() !== '') {
       // fetch graphql schema
-      getGraphqlSchema(endpoint).payload
-        .then(response => {
-          if (response.data && response.data.__schema) {
-            setGraphqlSchema(response.data);
-            setQueryResultsStatus('Waiting...');
-          }
-        })
-        .catch(error => console.log(error));
+      this.getGraphQLSchema(endpoint);
 
       // fetch queries and history from server
       getQueries().payload
@@ -71,12 +63,13 @@ class GraphiQLContainer extends React.Component {
       return Promise.resolve('Please provide a query.');
     } else {
       const {
-        endpoint,
         addQueryHistoryItem,
         setSelectedQuery,
         saveQueryHistory,
         selectedQuery
       } = this.props;
+
+      const endpoint = selectedQuery.endpoint;
 
       // axios defaults
       axios.defaults.baseURL = endpoint;
@@ -112,6 +105,7 @@ class GraphiQLContainer extends React.Component {
           };
 
           const history = {
+            endpoint,
             query: graphQLParams.query,
             response: results.response.data,
             variables: graphQLParams.variables
@@ -209,7 +203,7 @@ class GraphiQLContainer extends React.Component {
       }
     });
 
-    this.props.setSaveModal(true);
+    this.props.setQuerySaveModel(true);
   }
 
   handleClickSave (values) {
@@ -219,7 +213,7 @@ class GraphiQLContainer extends React.Component {
       resetForm,
       selectedQuery,
       setSelectedQuery,
-      setSaveModal
+      setQuerySaveModel
     } = this.props;
 
     const { name, description } = values;
@@ -228,8 +222,9 @@ class GraphiQLContainer extends React.Component {
       ...this.query,
       collection: this.query.collection.value,
       description,
-      name,
+      endpoint: selectedQuery.endpoint,
       id: selectedQuery.id || cuid(),
+      name,
       results: JSON.stringify(selectedQuery.results)
     };
 
@@ -241,7 +236,7 @@ class GraphiQLContainer extends React.Component {
         }
       })
       .catch(error => console.log(error));
-    setSaveModal(false);
+    setQuerySaveModel(false);
     resetForm('saveForm');
   }
 
@@ -280,6 +275,8 @@ class GraphiQLContainer extends React.Component {
       target.parentNode.dataset.collection || target.dataset.collection;
     const query = queryCollectionAll[collection][id];
 
+    this.getGraphQLSchema(query.endpoint);
+
     if (query.id !== selectedQuery.id) {
       this.query = {
         collection: { value: query.collection },
@@ -308,8 +305,8 @@ class GraphiQLContainer extends React.Component {
 
   handleQueryHistoryItemClick (event) {
     const {
-      queryHistoryAll,
       initialState,
+      queryHistoryAll,
       setQueryResultsStatus,
       setSelectedQuery
     } = this.props;
@@ -320,7 +317,7 @@ class GraphiQLContainer extends React.Component {
 
     const data = {
       ...initialState.query.selectedQuery,
-      query: history.query,
+      ...history,
       variables: history.variables || '',
       results: {
         ...initialState.query.selectedQuery.results,
@@ -331,8 +328,34 @@ class GraphiQLContainer extends React.Component {
     this.query.query = data.query;
     this.query.variables = data.variables;
 
+    this.getGraphQLSchema(history.endpoint);
+
     setSelectedQuery(data);
     setQueryResultsStatus('Waiting');
+  }
+
+  getGraphQLSchema (endpoint) {
+    const {
+      getGraphqlSchema,
+      selectedQuery,
+      setGraphqlSchema,
+      setSchemaIsConnected
+    } = this.props;
+
+    if (endpoint !== selectedQuery.endpoint) {
+      getGraphqlSchema(endpoint).payload
+        .then(response => {
+          if (response.data && response.data.__schema) {
+            setGraphqlSchema(response.data);
+            setSchemaIsConnected(true);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          setGraphqlSchema({});
+          setSchemaIsConnected(false);
+        });
+    }
   }
 
   prettyQuery (query) {

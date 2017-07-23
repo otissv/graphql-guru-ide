@@ -37,6 +37,7 @@ export class CreateQueryHistory {
       return {
         ...previous,
         [item.id]: {
+          endpoint: item.endpoint,
           query: item.query,
           response: JSON.parse(item.response),
           variables: item.variables
@@ -78,12 +79,14 @@ export class SaveQueryHistory {
       actions: ['ideQueryHistorySave'],
       query: `mutation (
         $id:        String
+        $endpoint:  String
         $query:     String
         $variables: String
         $response:  String
       ) {
         ideQueryHistorySave (
           id:        $id
+          endpoint:  $endpoint
           query:     $query
           variables: $variables
           response:  $response

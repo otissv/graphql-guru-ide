@@ -49,16 +49,7 @@ const CollectionButton = HistoryButton.extend`
   }
 `;
 
-const Info = styled.div`
-  padding: 0 20px 20px 20px;
-  > p {
-    font-size: 13px;
-  }
-
-  > pre {
-    font-size: 13px;
-  }
-`;
+const Info = styled.div`padding: 0 20px 20px 20px;`;
 
 const List = styled.ul`
   margin: 0;
@@ -126,7 +117,7 @@ const AccordionItem = styled.li`
 
 export default class EditorSidebar extends React.Component {
   collectionList () {
-    const { collections, onCollectionItemClick } = this.props;
+    const { collections, collectionInfo, onCollectionItemClick } = this.props;
 
     const collectionKeys = Object.keys(collections);
     const queries = items =>
@@ -150,7 +141,9 @@ export default class EditorSidebar extends React.Component {
       });
 
     return collectionKeys.length === 0
-      ? <p style={{ padding: '10px' }}>Save queries to create collections.</p>
+      ? <Info>
+          {collectionInfo}
+        </Info>
       : collectionKeys.map(key =>
           <AccordionItem key={key} data-collection={key}>
             <AccordionButton>
@@ -162,35 +155,12 @@ export default class EditorSidebar extends React.Component {
   }
 
   historyList () {
-    const { history, onHistoryItemClick } = this.props;
+    const { history, historyInfo, onHistoryItemClick } = this.props;
 
     const historyKeys = Object.keys(history);
     return historyKeys.length === 0
       ? <Info key="info">
-          <p>Use the query editor to left to send queries to the server.</p>
-          <p>
-            Queries typically start with a {`"{"`} character. Lines that start
-            with a # are ignored.
-          </p>
-          <p>An example query might look like:</p>
-          <pre>
-            {`}
-  User {
-    id
-    firstName
-    lastName
-  }
-}`}
-          </pre>
-
-          <p>
-            Keyboard shortcuts:<br />
-            <br />
-            Run Query: Ctrl-Enter or press the play button above the query
-            editor.<br />
-            <br />
-            Auto Complete: Ctrl-Space or just start typing.`}
-          </p>
+          {historyInfo}
         </Info>
       : historyKeys.reverse().map(key => {
         const date = new Date(parseInt(key, 10)).toISOString();
@@ -208,17 +178,13 @@ export default class EditorSidebar extends React.Component {
   render () {
     const collections = this.collectionList();
     const history = this.historyList();
-    const {
-      showSidebarQueryCollection,
-      showSidebarQueryHistory,
-      type
-    } = this.props;
+    const { showSidebarCollection, showSidebarHistory, type } = this.props;
 
     return (
       <Sidebar>
         <HistoryButton
           className={type === 'history' ? 'Editor-sidebar-button-active' : ''}
-          onClick={showSidebarQueryHistory}
+          onClick={showSidebarHistory}
         >
           <Icon src={historyIcon} />
         </HistoryButton>
@@ -226,7 +192,7 @@ export default class EditorSidebar extends React.Component {
           className={
             type === 'collection' ? 'Editor-sidebar-button-active' : ''
           }
-          onClick={showSidebarQueryCollection}
+          onClick={showSidebarCollection}
         >
           <Icon src={folderIcon} />
         </CollectionButton>

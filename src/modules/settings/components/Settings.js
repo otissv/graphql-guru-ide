@@ -75,7 +75,12 @@ export default class Settings extends React.PureComponent {
           </Checkbox>
 
           <FormRow styledFormRow={footerStyled}>
-            <Button onClick={this.handleOnClickCancel}>Cancel</Button>
+            <Button
+              styledButton="margin-right: 10px;"
+              onClick={this.handleOnClickCancel}
+            >
+              Cancel
+            </Button>
 
             <Button primary type="submit">
               Clear History

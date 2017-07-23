@@ -9,40 +9,55 @@ import Settings from '../../settings/containers/container-settings';
 import '../../../../node_modules/graphiql/graphiql.css';
 import '../css/graphiql-guru.css';
 import IconButton from '../../../styled/components/IconButton';
-import settingsIcon from '../../../icons/cog.svg';
 import prettifyIcon from '../../../icons/flash.svg';
 import refreshIcon from '../../../icons/ccw.svg';
 import saveIcon from '../../../icons/save.svg';
 import infoIcon from '../../../icons/info.svg';
-
-const Toolbar = styled.div`
-  padding: 5px 10px;
-  height: 40px;
-  position: absolute;
-  top: 0;
-  left: 230px;
-  right: 0;
-`;
-
-const SettingButton = styled.div`
-  float: right;
-  transform: translateY(-4px);
-`;
-
-const ToolbarHeader = styled.h1`
-  font-weight: bold;
-  font-size: 12px;
-  color: ${props => props.theme.colors.primary};
-  float: left;
-`;
+import EditorToolbar from '../../shared/components/Editor-toolbar-shared';
 
 const Container = styled.div`
   position: absolute;
-  bottom: 30px;
+  bottom: 0;
   left: 230px;
   right: 0;
-  top: 40px;
+  top: 80px;
 `;
+
+const Error = styled.span`
+  color: #f00;
+  float: right;
+  padding: 7px 20px;
+`;
+
+const HistoryInfo = props =>
+  <div>
+    <p>Use the query editor to left to send queries to the server.</p>
+    <p>
+      Queries typically start with a {`"{"`} character. Lines that start with a
+      # are ignored.
+    </p>
+    <p>An example query might look like:</p>
+    <pre>
+      {`}
+  User {
+    id
+    firstName
+    lastName
+  }
+}`}
+    </pre>
+
+    <p>
+      Keyboard shortcuts:<br />
+      <br />
+      Run Query: Ctrl-Enter or press the play button above the query editor.<br
+      />
+      <br />
+      Auto Complete: Ctrl-Space or just start typing.`}
+    </p>
+  </div>;
+
+const CollectionInfo = props => <p>Save queries to create collections</p>;
 
 class CustomGraphiQL extends React.Component {
   constructor (props) {
@@ -61,17 +76,14 @@ class CustomGraphiQL extends React.Component {
     this.props.openSaveModel();
   }
 
-  setInfoModal () {
-    this.props.setInfoModal(true);
-  }
-
-  setSettingsModal () {
-    this.props.setSettingsModal(true);
+  setQueryInfoModal () {
+    this.props.setQueryInfoModal(true);
   }
 
   render () {
     const {
       forms,
+      getGraphqlSchema,
       handleChangeCollection,
       handleChangeInputCollection,
       handleClickPrettify,
@@ -84,11 +96,15 @@ class CustomGraphiQL extends React.Component {
       queryHistoryAll,
       result,
       selectedQuery,
-      setInfoModal,
-      setSaveModal,
-      sidebarQueryContent,
-      showSidebarQueryHistory,
+      setQueryEndpoint,
+      setGraphqlSchema,
+      setQueryInfoModal,
+      setQuerySaveModel,
+      setSchemaIsConnected,
+      setSettingsModal,
       showSidebarQueryCollection,
+      showSidebarQueryHistory,
+      sidebarQueryContent,
       uiQuery,
       validateSaveModule
     } = this.props;
@@ -102,36 +118,36 @@ class CustomGraphiQL extends React.Component {
           history={queryHistoryAll}
           onCollectionItemClick={handleQueryCollectionItemClick}
           onHistoryItemClick={handleQueryHistoryItemClick}
-          showSidebarQueryHistory={showSidebarQueryHistory}
-          showSidebarQueryCollection={showSidebarQueryCollection}
+          showSidebarHistory={showSidebarQueryHistory}
+          showSidebarCollection={showSidebarQueryCollection}
           type={sidebarQueryContent}
+          historyInfo={<HistoryInfo />}
+          collectionInfo={<CollectionInfo />}
         />
-        <Toolbar>
-          <ToolbarHeader>
-            {selectedQuery.name || 'Unnamed'} {' '}
-            {selectedQuery.id ? `- ${selectedQuery.id}` : null}{' '}
-          </ToolbarHeader>
-          <SettingButton>
-            <IconButton src={settingsIcon} onClick={this.setSettingsModal} />
-          </SettingButton>
-        </Toolbar>
-
+        <EditorToolbar
+          {...selectedQuery}
+          setSettingsModal={setSettingsModal}
+          getGraphqlSchema={getGraphqlSchema}
+          setQueryEndpoint={setQueryEndpoint}
+          setGraphqlSchema={setGraphqlSchema}
+          setSchemaIsConnected={setSchemaIsConnected}
+        />
         <Container>
           <GraphiQL {...this.props}>
             <GraphiQL.Toolbar id="graphiql-query-editor">
               <IconButton onClick={handleClickPrettify} src={prettifyIcon} />
               <IconButton onClick={this.openSaveModel} src={saveIcon} />
               <IconButton onClick={handleClickRest} src={refreshIcon} />
-              <IconButton onClick={this.setInfoModal} src={infoIcon} />
+              <IconButton onClick={this.setQueryInfoModal} src={infoIcon} />
             </GraphiQL.Toolbar>
 
             <GraphiQL.Footer>
-              {status ? ' Status:' : null} {' '}
-              <span style={{ color: '#E10098' }}>{status}</span>
-              {time ? ' Time:' : null} {' '}
-              <span style={{ color: '#E10098' }}>
-                {time ? `${time}  ms` : null}
-              </span>
+              {this.props.isConnected
+                ? <span>
+                    {status ? `Status: ${status}` : null}
+                    {time ? ' Time:' : null} {time ? `${time}  ms` : null}
+                  </span>
+                : <Error className="GraphQL-connected">Schema not found</Error>}
             </GraphiQL.Footer>
           </GraphiQL>
         </Container>
@@ -141,7 +157,7 @@ class CustomGraphiQL extends React.Component {
           collectionLabels={this.collectionLabels()}
           handleClickSave={handleClickSave}
           forms={forms}
-          setSaveModal={setSaveModal}
+          setSaveModel={setQuerySaveModel}
           handleChangeCollection={handleChangeCollection}
           handleChangeInputCollection={handleChangeInputCollection}
           queryCollection={queryCollection}
@@ -150,7 +166,7 @@ class CustomGraphiQL extends React.Component {
         />
 
         <InfoModal
-          setInfoModal={setInfoModal}
+          setInfoModal={setQueryInfoModal}
           opened={uiQuery.isInfoModalOpen}
           result={result}
           selectedQuery={selectedQuery}

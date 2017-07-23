@@ -15,7 +15,7 @@
 .Persisted-result .ReactCodeMirror {
   height: 100%;
   position: absolute;
-  top: 38px;
+  top: 0px;
   width: 50%;
 }
 

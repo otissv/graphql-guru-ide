@@ -5,8 +5,7 @@ export const register = 'graphql';
 
 export const initialState = {
   introspection: {},
-  isConnected: false,
-  endpoint: 'http://localhost:8000/graphql'
+  isConnected: false
 };
 
 export class GetGraphqlSchema {
@@ -34,19 +33,6 @@ export class SetGraphqlSchema {
 
   reducer (state, action) {
     return { ...state, introspection: action.payload };
-  }
-}
-
-export class SetEndpoint {
-  action (routes) {
-    return {
-      type: 'SetEndpoint',
-      payload: routes
-    };
-  }
-
-  reducer (state, action) {
-    return { ...state, endpoint: action.payload };
   }
 }
 

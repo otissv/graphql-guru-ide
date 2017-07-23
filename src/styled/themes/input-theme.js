@@ -1,4 +1,4 @@
-export default function input ({ borders, colors }) {
+export default function input ({ borders, colors, fonts }) {
   return {
     background: colors.background,
     border: 'none',
@@ -6,7 +6,7 @@ export default function input ({ borders, colors }) {
     borderRadius: 0,
     color: colors.foreground,
     display: 'inline-block',
-    height: '40px',
+    height: '30px',
     maxWidth: '100%',
     outline: 'none',
     overflow: 'visible',
@@ -16,7 +16,7 @@ export default function input ({ borders, colors }) {
     verticalAlign: 'middle',
     webkitAppearance: 'none',
     width: '100%',
-    fontSize: '14px',
+    fontSize: fonts.size.default,
     hover: {
       background: colors.secondary
     },
@@ -30,12 +30,12 @@ export default function input ({ borders, colors }) {
       large: {
         height: '55px',
         padding: '0 12px',
-        fontSize: '20px'
+        fontSize: fonts.size.large
       },
       small: {
         height: '30px',
         padding: '0 8px',
-        fontSize: '14px'
+        fontSize: fonts.size.default
       }
     },
     widths: {

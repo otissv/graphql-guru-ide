@@ -12,6 +12,7 @@ export const initialState = {
     id: null,
     collection: '',
     description: '',
+    endpoint: 'http://localhost:8000/graphql',
     name: '',
     query: '',
     variables: '',
@@ -24,32 +25,6 @@ export const initialState = {
     }
   }
 };
-
-export class SetSaveModal {
-  action (bool) {
-    return { type: 'SetSaveModal', payload: bool };
-  }
-
-  reducer (state, action) {
-    return {
-      ...state,
-      uiQuery: { ...state.uiQuery, isSaveModalOpen: action.payload }
-    };
-  }
-}
-
-export class SetInfoModal {
-  action (bool) {
-    return { type: 'SetInfoModal', payload: bool };
-  }
-
-  reducer (state, action) {
-    return {
-      ...state,
-      uiQuery: { ...state.uiQuery, isInfoModalOpen: action.payload }
-    };
-  }
-}
 
 export class CreateQuery {
   action (data) {
@@ -65,6 +40,7 @@ export class CreateQuery {
         $id:          String
         $collection:  String
         $description: String
+        $endpoint:    String
         $name:        String
         $query:       String
         $variables:   String
@@ -74,6 +50,7 @@ export class CreateQuery {
           id:          $id
           collection:  $collection
           description: $description
+          endpoint:    $endpoint
           name:        $name
           query:       $query
           variables:   $variables
@@ -83,6 +60,7 @@ export class CreateQuery {
           collection
           created
           description
+          endpoint
           name
           query
           variables
@@ -113,6 +91,7 @@ export class GetQueries {
           collection
           created
           description
+          endpoint
           name
           query
           variables
@@ -123,6 +102,7 @@ export class GetQueries {
         }
         ideQueryHistoryFindAll {
           id
+          endpoint
           query
           variables
           response
@@ -147,6 +127,16 @@ export class SetSelectedQuery {
   }
 }
 
+export class SelectedQueryToInitialState {
+  action (query) {
+    return { type: 'SelectedQueryToInitialState', payload: query };
+  }
+
+  reducer (state, action) {
+    return { ...state, selectedQuery: initialState.selectedQuery };
+  }
+}
+
 export class SetQueryResults {
   action (query) {
     return { type: 'SetQueryResults', payload: query };
@@ -158,6 +148,25 @@ export class SetQueryResults {
       selectedQuery: {
         ...state.selectedQuery,
         results: action.payload
+      }
+    };
+  }
+}
+
+export class SetQueryEndpoint {
+  action (routes) {
+    return {
+      type: 'SetQueryEndpoint',
+      payload: routes
+    };
+  }
+
+  reducer (state, action) {
+    return {
+      ...state,
+      selectedQuery: {
+        ...state.selectedQuery,
+        endpoint: action.payload
       }
     };
   }
@@ -178,6 +187,32 @@ export class SetQueryResultsStatus {
           status: action.payload
         }
       }
+    };
+  }
+}
+
+export class SetQuerySaveModel {
+  action (bool) {
+    return { type: 'SetQuerySaveModel', payload: bool };
+  }
+
+  reducer (state, action) {
+    return {
+      ...state,
+      uiQuery: { ...state.uiQuery, isSaveModalOpen: action.payload }
+    };
+  }
+}
+
+export class SetQueryInfoModal {
+  action (bool) {
+    return { type: 'SetQueryInfoModal', payload: bool };
+  }
+
+  reducer (state, action) {
+    return {
+      ...state,
+      uiQuery: { ...state.uiQuery, isInfoModalOpen: action.payload }
     };
   }
 }
