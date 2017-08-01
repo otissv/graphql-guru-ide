@@ -4,9 +4,12 @@ import { query } from '../../../helpers/async-query';
 export const register = 'query';
 
 export const initialState = {
-  uiQuery: {
+  uiQueryEditor: {
+    gqlTheme: 'dracula',
+    gqlThemePaper: false,
+    isInfoModalOpen: false,
     isSaveModalOpen: false,
-    isInfoModalOpen: false
+    sidebarQueryContent: 'history'
   },
   selectedQuery: {
     id: null,
@@ -25,6 +28,25 @@ export const initialState = {
     }
   }
 };
+
+const IDE_QUERY_FRAGMENT = `
+  fragment ideQuery on IdeQuery {
+    id
+    collection
+    created
+    description
+    endpoint
+    name
+    query
+    variables
+    results
+    RESULTS_ {
+      result
+      error {
+        message
+      }
+    }
+  }`;
 
 export class CreateQuery {
   action (data) {
@@ -56,23 +78,10 @@ export class CreateQuery {
           variables:   $variables
           results:     $results
         ) {
-          id
-          collection
-          created
-          description
-          endpoint
-          name
-          query
-          variables
-          results
-          RESULTS_ {
-            result
-            error {
-              message
-            }
-          }
+          ...ideQuery
         }
-      }`,
+      }
+      ${IDE_QUERY_FRAGMENT}`,
       variables: JSON.stringify(obj)
     });
 
@@ -87,18 +96,7 @@ export class GetQueries {
       actions: ['ideQueryFindAll', 'ideQueryHistoryFindAll'],
       query: `query {
         ideQueryFindAll {
-          id
-          collection
-          created
-          description
-          endpoint
-          name
-          query
-          variables
-          results
-          RESULTS_ {
-            result
-          }
+          ...ideQuery
         }
         ideQueryHistoryFindAll {
           id
@@ -110,20 +108,11 @@ export class GetQueries {
             result
           }
         }
-      }`
+      }
+      ${IDE_QUERY_FRAGMENT}`
     });
 
     return { type: 'GetQueries', payload: request };
-  }
-}
-
-export class SetSelectedQuery {
-  action (query) {
-    return { type: 'SetSelectedQuery', payload: query };
-  }
-
-  reducer (state, action) {
-    return { ...state, selectedQuery: action.payload };
   }
 }
 
@@ -137,44 +126,9 @@ export class SelectedQueryToInitialState {
   }
 }
 
-export class SetQueryResults {
+export class SetQueryResultProps {
   action (query) {
-    return { type: 'SetQueryResults', payload: query };
-  }
-
-  reducer (state, action) {
-    return {
-      ...state,
-      selectedQuery: {
-        ...state.selectedQuery,
-        results: action.payload
-      }
-    };
-  }
-}
-
-export class SetQueryEndpoint {
-  action (routes) {
-    return {
-      type: 'SetQueryEndpoint',
-      payload: routes
-    };
-  }
-
-  reducer (state, action) {
-    return {
-      ...state,
-      selectedQuery: {
-        ...state.selectedQuery,
-        endpoint: action.payload
-      }
-    };
-  }
-}
-
-export class SetQueryResultsStatus {
-  action (query) {
-    return { type: 'SetQueryResultsStatus', payload: query };
+    return { type: 'SetQueryResultProps', payload: query };
   }
 
   reducer (state, action) {
@@ -184,35 +138,54 @@ export class SetQueryResultsStatus {
         ...state.selectedQuery,
         results: {
           ...state.selectedQuery.results,
-          status: action.payload
+          ...action.payload
         }
       }
     };
   }
 }
 
-export class SetQuerySaveModel {
-  action (bool) {
-    return { type: 'SetQuerySaveModel', payload: bool };
+export class SetSelectedQuery {
+  action (query) {
+    return { type: 'SetSelectedQuery', payload: query };
   }
 
   reducer (state, action) {
-    return {
-      ...state,
-      uiQuery: { ...state.uiQuery, isSaveModalOpen: action.payload }
-    };
+    return { ...state, selectedQuery: action.payload };
   }
 }
 
-export class SetQueryInfoModal {
-  action (bool) {
-    return { type: 'SetQueryInfoModal', payload: bool };
+export class SetSelectedQueryProps {
+  action (obj) {
+    return { type: 'SetSelectedQueryProps', payload: obj };
   }
 
   reducer (state, action) {
-    return {
-      ...state,
-      uiQuery: { ...state.uiQuery, isInfoModalOpen: action.payload }
+    if (action.type === 'SetSelectedQueryProps') {
+
+      return {
+        ...state,
+        selectedQuery: {
+          ...state.selectedQuery,
+          ...action.payload
+        }
+      };
+    
+    } else {
+      return state;
+    }
+  }
+}
+
+export class SetUiQueryProps {
+  action (contentType) {
+    return { type: 'SetUiQueryProps', payload: contentType };
+  }
+
+  reducer (state, action) {
+    return { 
+      ...state, 
+      uiQueryEditor: { ...state.uiQueryEditor, ...action.payload }
     };
   }
 }

@@ -1,52 +1,15 @@
-.Persisted {
-  background: #000000;
-  bottom: 30px;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
-.Persisted .ReactCodeMirror {
-  bottom: 0;
-  height: auto !important;
-}
-
-.Persisted-query .ReactCodeMirror,
-.Persisted-result .ReactCodeMirror {
-  height: 100%;
-  position: absolute;
-  top: 0px;
-  width: 50%;
-}
-
-.Persisted-query .ReactCodeMirror {
-  left: 0;
-}
-
-.cm-s-dracula.CodeMirror,
-.cm-s-dracula .CodeMirror-gutters {
-  background: #000000 !important;
-}
-
-.Persisted-result {
-  resize: vertical;
-  overflow: auto;
-  /*cursor: col-resize;*/
-}
-
-.Persisted-result .ReactCodeMirror {
-  left: 50%;
-  border-left: 1px solid #515151;
-}
-
-.Persisted .CodeMirror {
+.CodeMirror,
+.ReactCodeMirror {
   position: relative;
   bottom: 0;
   height: 100%;
 }
 
-.Persisted .CodeMirror-code {
-  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
-  font-size: 13px;
-  line-height: 20px;
+.CodeMirror-hscrollbar {
+  overflow-x: hidden !important;
+}
+
+.cm-s-dracula span.cm-string, 
+.cm-s-dracula span.cm-string-2 {
+  color:#32d296;
 }

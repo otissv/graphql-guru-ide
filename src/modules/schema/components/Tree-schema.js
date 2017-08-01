@@ -1,43 +1,54 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import JSONTree from 'react-json-tree';
+import styled from 'styled-components';
 
-const Tree = props => {
-  const theme = {
-    scheme: 'google',
-    author: 'seth wright (http://sethawright.com)',
-    base00: '#1d1f21',
-    base01: '#282a2e',
-    base02: '#373b41',
-    base03: '#969896',
-    base04: '#b4b7b4',
-    base05: '#c5c8c6',
-    base06: '#e0e0e0',
-    base07: '#ffffff',
-    base08: '#CC342B',
-    base09: '#F96A38',
-    base0A: '#FBA922',
-    base0B: '#198844',
-    base0C: '#3971ED',
-    base0D: '#3971ED',
-    base0E: '#A36AC7',
-    base0F: '#3971ED'
-  };
+const TreeContainer = styled.div`margin: 20px;`;
 
-  return (
-    <JSONTree
-      getItemString={(type, data, itemType, itemString) => (
-        <span>
-          {(data.name && data.name.value) ||
-            data.name ||
-            data.kind ||
-            data.module ||
-            itemString}
-        </span>
-      )}
-      data={props.data}
-      theme={theme}
-    />
-  );
-};
+class Tree extends PureComponent {
+  componentDidMount () {
+    const tree = document.querySelector('.tree ul');
+    tree.style.backgroundColor = 'rgb(0,0,0)';
+  }
+
+  render () {
+    const theme = {
+      scheme: 'summerfruit',
+      author: 'christopher corley (http://cscorley.github.io/)',
+      base00: '#151515',
+      base01: '#202020',
+      base02: '#303030',
+      base03: '#FF0086',
+      base04: '#B0B0B0',
+      base05: '#D0D0D0',
+      base06: '#E0E0E0',
+      base07: '#FFFFFF',
+      base08: '#FF0086',
+      base09: '#B0B0B0',
+      base0A: '#ABA800',
+      base0B: '#151515',
+      base0C: '#1faaaa',
+      base0D: '#3fA980',
+      base0E: '#AD00A1',
+      base0F: '#cc6633'
+    };
+
+    return (
+      <TreeContainer className="tree">
+        <JSONTree
+          getItemString={(type, data, itemType, itemString) =>
+            <span>
+              {(data.name && data.name.value) ||
+                data.name ||
+                data.kind ||
+                data.module ||
+                itemString}
+            </span>}
+          data={this.props.data}
+          theme={theme}
+        />
+      </TreeContainer>
+    );
+  }
+}
 
 export default Tree;

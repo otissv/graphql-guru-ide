@@ -19,7 +19,7 @@ class SettingsContainer extends PureComponent {
 
     values.clearPersistedHistory &&
       this.props.selectedPersistedToInitialState();
-    values.clearQueryCollection && this.props.queryCollectionsToInitialState();
+    values.clearQueryCollection && this.props.queryCollectionAllToInitialState();
     values.clearQueryHistory && this.props.queryHistoryAllToInitialState({});
     this.props.resetForm('settingsForm');
     this.props.setSettingsModal(false);

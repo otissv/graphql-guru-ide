@@ -8,7 +8,10 @@
 .CodeMirror {
   font-family: 'Source Code Pro', 'Consolas', 'Inconsolata', 'Droid Sans Mono',
     'Monaco', monospace !important;
+    height: 100% !important;
 }
+
+
 
 .cm-s-dracula.CodeMirror,
 .cm-s-dracula .CodeMirror-gutters {
@@ -58,17 +61,24 @@
   background-color: #e10098 !important;
 }
 
-.cm-invalidchar {
-  color: #f1f1f1;
+.cm-s-dracula span.cm-string, 
+.cm-s-dracula span.cm-string-2,
+.result-window .cm-invalidchar  {
+  color:#32d296
+}
+
+.cm-invalidchar  {
+  color:#f1f1f1;
 }
 
 .graphiql-container .docExplorerWrap {
   display: none;
   width: 401px;
   position: fixed;
-  right: 0px;
+  right: -1px;
   bottom: 70px;
   top: 130px;
+  z-index: 999;
 }
 
 .graphiql-container .toolbar,
@@ -254,6 +264,7 @@
   background: rgba(0, 0, 0, 0);
   color: #f1f1f1;
   border: none;
+  line-height: 18px;
 }
 
 .graphiql-container .variable-editor-title:hover {

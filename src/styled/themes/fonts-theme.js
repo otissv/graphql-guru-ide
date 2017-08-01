@@ -14,8 +14,9 @@ export default function fonts ({ colors }) {
       sans: ''
     },
     size: {
-      default: '14px',
+      xsmall: '11px',
       small: '13px',
+      default: '14px',
       large: '20px'
     },
     lineHeight: 1.5

@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import CodeMirror from 'react-codemirror';
 import autobind from 'class-autobind';
+import styled from 'styled-components';
 import '../../../../node_modules/codemirror/lib/codemirror.css';
-require('codemirror/mode/javascript/javascript');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/addon/dialog/dialog');
-require('codemirror/addon/search/search');
-require('codemirror/keymap/sublime');
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/dialog/dialog';
+import 'codemirror/addon/search/search';
+import 'codemirror/keymap/sublime';
 
-export default class PersistedResultEditor extends React.PureComponent {
+const PersistedResult = styled.div`
+  height: calc(100% - 30px) !important;
+  overflow-y: auto;
+`;
+
+export default class PersistedResultEditor extends PureComponent {
   constructor () {
     super(...arguments);
     autobind(this);
@@ -29,7 +35,7 @@ export default class PersistedResultEditor extends React.PureComponent {
       : '';
 
     return (
-      <div className="Persisted-result">
+      <PersistedResult>
         <CodeMirror
           ref={editor => {
             this.editor = editor;
@@ -50,7 +56,6 @@ export default class PersistedResultEditor extends React.PureComponent {
             },
             gutters: ['CodeMirror-foldgutter'],
             keyMap: 'sublime',
-            lineNumbers: true,
             lineWrapping: true,
             matchBrackets: true,
             mode: 'application/json',
@@ -59,7 +64,7 @@ export default class PersistedResultEditor extends React.PureComponent {
             theme: 'dracula'
           }}
         />
-      </div>
+      </PersistedResult>
     );
   }
 }

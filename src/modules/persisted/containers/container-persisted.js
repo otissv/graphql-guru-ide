@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import autobind from 'class-autobind';
 import { connect } from '../../../store';
-import { parse, print } from 'graphql';
+import { buildClientSchema, parse, print } from 'graphql';
 import getClassMethods from '../../../helpers/get-class-methods';
 import cuid from 'cuid';
 import { initialState } from '../redux/redux-persisted';
@@ -12,21 +12,55 @@ class PersistedContainer extends React.PureComponent {
   constructor () {
     super(...arguments);
     autobind(this);
+
+    this.persisted = {
+      query: '',
+      collection: { value: this.props.forms.saveForm.fields.collection.value },
+      variables: ''
+    };
   }
 
   componentWillMount () {
-    // const { getPersisted, setPersisted } = this.props;
-    // getPersisted().payload
-    //   .then(response => setPersisted(response.data.Persisted))
-    //   .catch(error => console.log(error));
-  }
+    const {
+      createPersistedCollections,
+      createPersistedHistory,
+      getPersisted,
+      selectedPersisted
+    } = this.props;
 
-  fetchGraphql () {
-    const { selectedPersisted, setSelectedPersisted } = this.props;
     const endpoint = selectedPersisted.endpoint;
 
-    if (selectedPersisted.persisted.trim() === '') {
-      setSelectedPersisted({ result: 'Please provide a persisted persisted.' });
+    if (endpoint && endpoint.trim() !== '') {
+      // fetch graphql schema
+      this.getGraphQLSchema(endpoint);
+
+      // fetch queries and history from server
+      getPersisted().payload
+        .then(response => {
+          if (response.data.idePersistedFindAll) {
+            createPersistedCollections(response.data.idePersistedFindAll);
+          }
+
+          if (response.data.idePersistedHistoryFindAll) {
+            createPersistedHistory(response.data.idePersistedHistoryFindAll);
+          }
+        })
+        .catch(error => console.log(error));
+    }
+  }
+
+  fetcher () {
+    const { 
+      addPersistedHistoryItem,
+      savePersistedHistory,
+      selectedPersisted,
+      setSelectedPersisted,
+      setPersistedResultProps
+    } = this.props;
+    const endpoint = selectedPersisted.endpoint;
+
+    if (selectedPersisted.query.trim() === '') {
+      setPersistedResultProps({ response: 'Please provide a persisted query.' });
       return;
     } else {
       // axios defaults
@@ -43,10 +77,10 @@ class PersistedContainer extends React.PureComponent {
 
       return axios({
         ...axiosConfig,
-        data: JSON.parse(selectedPersisted.persisted)
+        data: JSON.parse(selectedPersisted.query)
       })
         .then(response => {
-          console.log(response.data);
+
           const results = {
             request: {
               data: response.config.data,
@@ -63,11 +97,23 @@ class PersistedContainer extends React.PureComponent {
             response: response.data
           };
 
+          this.persisted.query = selectedPersisted.query;
+
+          const history = {
+            endpoint,
+            query: selectedPersisted.query,
+            response: results.response,
+            variables: selectedPersisted.variables
+          };
+  
           setSelectedPersisted({
             ...selectedPersisted,
             ...this.persisted,
             results
           });
+
+          addPersistedHistoryItem(history);
+          savePersistedHistory(history);
 
           return response.data.data;
         })
@@ -87,23 +133,47 @@ class PersistedContainer extends React.PureComponent {
     }
   }
 
+  getGraphQLSchema (endpoint) {
+    const {
+      getGraphqlSchema,
+      selectedPersisted,
+      setGraphqlSchema,
+      setSchemaIsConnected
+    } = this.props;
+
+    if (endpoint !== selectedPersisted.endpoint) {
+      getGraphqlSchema(endpoint).payload
+        .then(response => {
+          if (response.data && response.data.__schema) {
+            setGraphqlSchema(response.data);
+            setSchemaIsConnected(true);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          setGraphqlSchema({});
+          setSchemaIsConnected(false);
+        });
+    }
+  }
+
   handleClickPrettify (event) {
     const { setSelectedPersisted, selectedPersisted } = this.props;
 
-    const persisted =
-      this.persisted.persisted.trim() !== ''
-        ? this.persisted.persisted.trim()
-        : selectedPersisted.persisted;
+    const persisted = selectedPersisted.query;
 
-    const prettyText = this.prettyPersisted(persisted);
+    let prettyText = persisted
+      .replace('[', '[\n\t')
+      .replace('{', '{\n\t')
+      .replace('}', '}\n')
+      .replace(',', ',\n');
+    prettyText = JSON.stringify(prettyText, null, 2);
+
+
     setSelectedPersisted({
       ...selectedPersisted,
-      persisted: prettyText
+      query: JSON.parse(prettyText)
     });
-  }
-
-  handelOnEditPersisted (persisted) {
-    this.persisted.persisted = persisted;
   }
 
   handelOnEditVariables (variables) {
@@ -122,7 +192,6 @@ class PersistedContainer extends React.PureComponent {
 
   handleClickRest () {
     this.persisted = {
-      id: null,
       collection: { value: '' },
       persisted: '',
       variables: ''
@@ -150,34 +219,36 @@ class PersistedContainer extends React.PureComponent {
 
   handleClickSave (values) {
     const {
-      addCollection,
+      addPersistedCollection,
       createPersisted,
       resetForm,
       selectedPersisted,
       setSelectedPersisted,
-      setPersistedSaveModel
+      setUiPersistedProps
     } = this.props;
 
     const { name, description } = values;
 
     const data = {
+      ...selectedPersisted,
       ...this.persisted,
       collection: this.persisted.collection.value,
       description,
       name,
+      query: this.persisted.query,
       id: selectedPersisted.id || cuid(),
       results: JSON.stringify(selectedPersisted.results)
     };
 
     setSelectedPersisted(data);
-    addCollection(data);
+    addPersistedCollection(data);
     createPersisted(data).payload
       .then(response => {
         if (response.data.idePersistedCreate.RESULTS_.result === 'failed') {
         }
       })
       .catch(error => console.log(error));
-    setPersistedSaveModel(false);
+    setUiPersistedProps({ isSaveModalOpen: false });
     resetForm('saveForm');
   }
 
@@ -199,11 +270,11 @@ class PersistedContainer extends React.PureComponent {
   }
 
   showSidebarPersistedCollection (event) {
-    this.props.changeSidebarPersistedContent('collection');
+    this.props.setUiPersistedProps({ sidebarPersistedContent: 'collection' });
   }
 
   showSidebarPersistedHistory (event) {
-    this.props.changeSidebarPersistedContent('history');
+    this.props.setUiPersistedProps({ sidebarPersistedContent: 'history' });
   }
 
   handlePersistedCollectionItemClick (event) {
@@ -250,7 +321,7 @@ class PersistedContainer extends React.PureComponent {
     const {
       persistedHistoryAll,
       initialState,
-      setPersistedResultsStatus,
+      setPersistedResultProps,
       setSelectedPersisted
     } = this.props;
 
@@ -260,31 +331,22 @@ class PersistedContainer extends React.PureComponent {
 
     const data = {
       ...initialState.persisted.selectedPersisted,
-      persisted: history.persisted,
-      variables: history.variables || '',
+      ...history,
       results: {
         ...initialState.persisted.selectedPersisted.results,
         response: history.response
       }
     };
 
-    this.persisted.persisted = data.persisted;
+    this.persisted.query = data.persisted;
     this.persisted.variables = data.variables;
 
     setSelectedPersisted(data);
-    setPersistedResultsStatus('Waiting');
-  }
-
-  prettyPersisted (query) {
-    return print(parse(query));
+    setPersistedResultProps({ status: 'Waiting' });
   }
 
   handleOnChangePersisted (value) {
-    try {
-      this.props.setSelectedPersisted({ persisted: value });
-    } catch (error) {
-      console.log(error);
-    }
+    this.props.setSelectedPersistedProps({ query: value });
   }
 
   handleOnChangeRequest (value) {}

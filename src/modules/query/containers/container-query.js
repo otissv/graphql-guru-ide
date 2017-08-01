@@ -23,7 +23,7 @@ class GraphiQLContainer extends React.Component {
 
   componentWillMount () {
     const {
-      createCollections,
+      createQueryCollections,
       createQueryHistory,
       getQueries,
       selectedQuery
@@ -39,7 +39,7 @@ class GraphiQLContainer extends React.Component {
       getQueries().payload
         .then(response => {
           if (response.data.ideQueryFindAll) {
-            createCollections(response.data.ideQueryFindAll);
+            createQueryCollections(response.data.ideQueryFindAll);
           }
 
           if (response.data.ideQueryHistoryFindAll) {
@@ -208,7 +208,7 @@ class GraphiQLContainer extends React.Component {
 
   handleClickSave (values) {
     const {
-      addCollection,
+      addQueryCollection,
       createQuery,
       resetForm,
       selectedQuery,
@@ -229,7 +229,7 @@ class GraphiQLContainer extends React.Component {
     };
 
     setSelectedQuery(data);
-    addCollection(data);
+    addQueryCollection(data);
     createQuery(data).payload
       .then(response => {
         if (response.data.ideQueryCreate.RESULTS_.result === 'failed') {
@@ -258,11 +258,11 @@ class GraphiQLContainer extends React.Component {
   }
 
   showSidebarQueryCollection (event) {
-    this.props.changeSidebarQueryContent('collection');
+    this.props.setUiQueryProps({ sidebarQueryContent: 'collection' });
   }
 
   showSidebarQueryHistory (event) {
-    this.props.changeSidebarQueryContent('history');
+    this.props.setUiQueryProps({ sidebarQueryContent: 'history' });
   }
 
   handleQueryCollectionItemClick (event) {
@@ -307,7 +307,7 @@ class GraphiQLContainer extends React.Component {
     const {
       initialState,
       queryHistoryAll,
-      setQueryResultsStatus,
+      setQueryResultProps,
       setSelectedQuery
     } = this.props;
 
@@ -331,7 +331,7 @@ class GraphiQLContainer extends React.Component {
     this.getGraphQLSchema(history.endpoint);
 
     setSelectedQuery(data);
-    setQueryResultsStatus('Waiting');
+    setQueryResultProps({ status: 'Waiting' });
   }
 
   getGraphQLSchema (endpoint) {
@@ -363,7 +363,8 @@ class GraphiQLContainer extends React.Component {
   }
 
   render () {
-    const { component, gqlTheme, gqlThemePaper, selectedQuery } = this.props;
+    const { component, uiQueryEditor, selectedQuery } = this.props;
+    const { gqlTheme, gqlThemePaper } = uiQueryEditor;
 
     const query =
       selectedQuery && selectedQuery.query && selectedQuery.query.trim() !== ''

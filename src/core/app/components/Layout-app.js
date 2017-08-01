@@ -1,5 +1,5 @@
 import React from 'react';
-import Nav from '../components/Nav-app';
+import Nav from '../../../modules/navigation/components/Nav-app';
 import styled from 'styled-components';
 
 const Page = styled.div`

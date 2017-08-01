@@ -1,11 +1,9 @@
-import React from 'react';
-import GraphiQL from 'graphiql';
+import React, { PureComponent } from 'react';
 import autobind from 'class-autobind';
+import GraphiQL from 'graphiql';
 import styled from 'styled-components';
 import InfoModal from '../../shared/components/Info-modal-shared';
 import SaveModal from '../../shared/components/Save-modal-shared';
-import EditorSidebar from '../../shared/components/Sidebar-shared';
-import Settings from '../../settings/containers/container-settings';
 import '../../../../node_modules/graphiql/graphiql.css';
 import '../css/graphiql-guru.css';
 import IconButton from '../../../styled/components/IconButton';
@@ -13,7 +11,10 @@ import prettifyIcon from '../../../icons/flash.svg';
 import refreshIcon from '../../../icons/ccw.svg';
 import saveIcon from '../../../icons/save.svg';
 import infoIcon from '../../../icons/info.svg';
-import EditorToolbar from '../../shared/components/Editor-toolbar-shared';
+import downloadIcon from '../../../icons/download.svg';
+import unreadIcon from '../../../icons/unread.svg';
+import Editor from '../../shared/components/Editor/Editor-shared';
+import Connection from '../../shared/components/Connection-shared';
 
 const Container = styled.div`
   position: absolute;
@@ -23,65 +24,77 @@ const Container = styled.div`
   top: 80px;
 `;
 
-const Error = styled.span`
-  color: #f00;
-  float: right;
-  padding: 7px 20px;
-`;
-
-const HistoryInfo = props =>
+const HistoryInfo = props => 
   <div>
-    <p>Use the query editor to left to send queries to the server.</p>
+    <p> Use the query editor to left to send queries to the server. </p> 
     <p>
-      Queries typically start with a {`"{"`} character. Lines that start with a
-      # are ignored.
-    </p>
-    <p>An example query might look like:</p>
-    <pre>
-      {`}
+      Queries typically start with a {`"{"`}
+      character.Lines that start with a# are ignored. 
+    </p> 
+    <p> An example query might look like: </p> 
+    <pre> {
+      `}
   User {
     id
     firstName
     lastName
   }
-}`}
+}`
+      } 
     </pre>
 
     <p>
-      Keyboard shortcuts:<br />
-      <br />
-      Run Query: Ctrl-Enter or press the play button above the query editor.<br
-      />
-      <br />
-      Auto Complete: Ctrl-Space or just start typing.`}
+    Keyboard shortcuts: <br />
+    <br />
+    Run Query: Ctrl - Enter or press the play button above the query editor. <br />
+    <br />
+    Auto Complete: Ctrl - Space or just start typing.
     </p>
-  </div>;
+  </div>
+;
 
 const CollectionInfo = props => <p>Save queries to create collections</p>;
 
-class CustomGraphiQL extends React.Component {
+class CustomGraphiQL extends PureComponent {
   constructor (props) {
     super(...arguments);
     autobind(this);
   }
 
-  collectionLabels () {
-    return Object.keys(this.props.queryCollectionAll).map(key => ({
-      label: key,
-      value: key
-    }));
-  }
-
   openSaveModel () {
-    this.props.openSaveModel();
+    const { selectedQuery, setQueryResultProps, setUiQueryProps } = this.props; 
+
+    if (selectedQuery.query.trim() === '') {
+      setQueryResultProps({ response: 'Please provide a persisted query.' });
+    } else {
+      setUiQueryProps({ isSaveModalOpen: true });
+    }
   }
 
-  setQueryInfoModal () {
-    this.props.setQueryInfoModal(true);
+  openInfoModal () {
+    this.props.setUiQueryProps({ isInfoModalOpen: true });
   }
+  
+  setInfoModal (bool) {
+    this.props.setUiQueryProps({ isInfoModalOpen: bool });
+  }
+
+  setSaveModal (bool) {
+    this.props.setUiQueryProps({ isSaveModalOpen: bool });
+
+    const { selectedQuery, setQueryResultProps, setUiQueryProps } = this.props; 
+
+    if (selectedQuery.query.trim() === '') {
+      setQueryResultProps({ response: 'Please provide a persisted query.' });
+    } else {
+      setUiQueryProps({ isSaveModalOpen: bool });
+    }
+  }
+  
 
   render () {
     const {
+      
       forms,
       getGraphqlSchema,
       handleChangeCollection,
@@ -91,89 +104,80 @@ class CustomGraphiQL extends React.Component {
       handleClickSave,
       handleQueryCollectionItemClick,
       handleQueryHistoryItemClick,
+      isConnected,
       queryCollection,
       queryCollectionAll,
       queryHistoryAll,
       result,
       selectedQuery,
-      setQueryEndpoint,
+      setSelectedQueryProps,
       setGraphqlSchema,
-      setQueryInfoModal,
-      setQuerySaveModel,
       setSchemaIsConnected,
       setSettingsModal,
       showSidebarQueryCollection,
       showSidebarQueryHistory,
-      sidebarQueryContent,
-      uiQuery,
+      uiQueryEditor,
       validateSaveModule
     } = this.props;
-
-    const { status, time } = result;
+    
+    const { sidebarQueryContent } = uiQueryEditor;
+    const { status, time } = result || {};
 
     return (
-      <div>
-        <EditorSidebar
-          collections={queryCollectionAll}
-          history={queryHistoryAll}
-          onCollectionItemClick={handleQueryCollectionItemClick}
-          onHistoryItemClick={handleQueryHistoryItemClick}
-          showSidebarHistory={showSidebarQueryHistory}
-          showSidebarCollection={showSidebarQueryCollection}
-          type={sidebarQueryContent}
-          historyInfo={<HistoryInfo />}
-          collectionInfo={<CollectionInfo />}
-        />
-        <EditorToolbar
-          {...selectedQuery}
-          setSettingsModal={setSettingsModal}
-          getGraphqlSchema={getGraphqlSchema}
-          setQueryEndpoint={setQueryEndpoint}
-          setGraphqlSchema={setGraphqlSchema}
-          setSchemaIsConnected={setSchemaIsConnected}
-        />
+      <Editor
+        
+        collectionInfo={<CollectionInfo />}
+        collections={queryCollectionAll}
+        history={queryHistoryAll}
+        historyInfo={<HistoryInfo />}
+
+        onCollectionItemClick={handleQueryCollectionItemClick}
+        onHistoryItemClick={handleQueryHistoryItemClick}
+        showSidebarCollection={showSidebarQueryCollection}
+        showSidebarHistory={showSidebarQueryHistory}
+        sidebarType={sidebarQueryContent}
+        
+        selectedItem={selectedQuery}
+        setSettingsModal={setSettingsModal}
+        getGraphqlSchema={getGraphqlSchema}
+        setEndpoint={setSelectedQueryProps}
+        setGraphqlSchema={setGraphqlSchema}
+        setSchemaIsConnected={setSchemaIsConnected}
+
+        collection={queryCollection}
+        forms={forms}  
+        handleChangeCollection={handleChangeCollection}
+        handleChangeInputCollection={handleChangeInputCollection}
+        handleClickSave={handleClickSave}
+        saveModalHeader="Save query"
+        saveModalOpened={uiQueryEditor.isSaveModalOpen}
+        validation={validateSaveModule}
+    
+        infoModalOpened={uiQueryEditor.isInfoModalOpen}
+        infoModalHeader="Query Info"
+        result={result}
+        setInfoModal={this.setInfoModal}
+        setSaveModel={this.setSaveModal}
+      >
         <Container>
           <GraphiQL {...this.props}>
             <GraphiQL.Toolbar id="graphiql-query-editor">
               <IconButton onClick={handleClickPrettify} src={prettifyIcon} />
               <IconButton onClick={this.openSaveModel} src={saveIcon} />
               <IconButton onClick={handleClickRest} src={refreshIcon} />
-              <IconButton onClick={this.setQueryInfoModal} src={infoIcon} />
+              <IconButton onClick={this.openInfoModal} src={infoIcon} />
             </GraphiQL.Toolbar>
 
             <GraphiQL.Footer>
-              {this.props.isConnected
-                ? <span>
-                    {status ? `Status: ${status}` : null}
-                    {time ? ' Time:' : null} {time ? `${time}  ms` : null}
-                  </span>
-                : <Error className="GraphQL-connected">Schema not found</Error>}
+              <Connection 
+                isConnected={isConnected}
+                status={status}
+                time={time}
+              />
             </GraphiQL.Footer>
           </GraphiQL>
         </Container>
-
-        <SaveModal
-          opened={uiQuery.isSaveModalOpen}
-          collectionLabels={this.collectionLabels()}
-          handleClickSave={handleClickSave}
-          forms={forms}
-          setSaveModel={setQuerySaveModel}
-          handleChangeCollection={handleChangeCollection}
-          handleChangeInputCollection={handleChangeInputCollection}
-          queryCollection={queryCollection}
-          validation={validateSaveModule}
-          selectedQuery={selectedQuery}
-        />
-
-        <InfoModal
-          setInfoModal={setQueryInfoModal}
-          opened={uiQuery.isInfoModalOpen}
-          result={result}
-          selectedQuery={selectedQuery}
-        />
-
-        <Settings />
-      </div>
+      </Editor>
     );
   }
 }

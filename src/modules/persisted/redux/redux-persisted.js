@@ -4,11 +4,11 @@ import { query } from '../../../helpers/async-query';
 export const register = 'persisted';
 
 export const initialState = {
-  uiPersisted: {
+  uiPersistedEditor: {
     isSaveModalOpen: false,
-    isInfoModalOpen: false
+    isInfoModalOpen: false,
+    sidebarPersistedContent: 'history'
   },
-  sidebarPersistedContent: 'history',
   selectedPersisted: {
     id: null,
     collection: '',
@@ -20,22 +20,30 @@ export const initialState = {
     results: {
       headers: {},
       request: {},
-      response: {},
+      response: '',
       status: 'Waiting...',
       time: ''
     }
   }
 };
 
-export class ChangeSidebarPersistedContent {
-  action (contentType) {
-    return { type: 'ChangeSidebarPersistedContent', payload: contentType };
-  }
-
-  reducer (state, action) {
-    return { ...state, sidebarPersistedContent: action.payload };
-  }
-}
+const IDE_PERSISTENT_FRAGMENT = `
+  fragment idePersisted on IdePersisted {
+    id
+    collection
+    description
+    endpoint
+    name
+    query
+    variables
+    results
+    RESULTS_ {
+      result
+      error {
+        message
+      }
+    }
+  }`;
 
 export class CreatePersisted {
   action (data) {
@@ -48,29 +56,29 @@ export class CreatePersisted {
       url: IDE_ROUTE,
       actions: ['idePersistedCreate'],
       query: `mutation (
-        $id:        String
-        $fragments: String
-        $query:     String
-        $variables:  String
+        $id:          String
+        $collection:  String
+        $description: String
+        $endpoint:    String
+        $name:        String
+        $query:       String
+        $variables:   String
+        $results:     String
       ) {
         idePersistedCreate (
-          id:        $String
-          fragments: $fragments
-          query:     $query
-          variables: $variables
+        id:          $id
+        collection:  $collection
+        description: $description
+        endpoint:    $endpoint
+        name:        $name
+        query:       $query
+        variables:   $variables
+        results:     $results
         ) {
-          id
-          fragments
-          query
-          variables
-          RESULTS_ {
-            result
-            error {
-              message
-            }
-          }
+          ...idePersisted
         }
-      }`,
+      }
+      ${IDE_PERSISTENT_FRAGMENT}`,
       variables: JSON.stringify(obj)
     });
 
@@ -82,28 +90,34 @@ export class GetPersisted {
   action () {
     const request = query({
       url: IDE_ROUTE,
-      actions: ['idePersistedFindAll'],
+      actions: ['idePersistedFindAll', 'idePersistedHistoryFindAll'],
       query: `query {
         idePersistedFindAll {
+          ...idePersisted
+        }
+        idePersistedHistoryFindAll {
           id
-          fragments
+          endpoint
           query
           variables
+          response
           RESULTS_ {
             result
             error {
+              type
               message
             }
           }
         }
-      }`
+      }
+     ${IDE_PERSISTENT_FRAGMENT}`
     });
 
     return { type: 'GetPersisted', payload: request };
   }
 }
 
-export class selectedPersistedToInitialState {
+export class SelectedPersistedToInitialState {
   action () {
     return {
       type: 'SetSelectedPersisted',
@@ -113,6 +127,25 @@ export class selectedPersistedToInitialState {
 
   reducer (state, action) {
     return { ...state, selectedPersisted: action.payload };
+  }
+}
+
+export class SetPersistedResultProps {
+  action (query) {
+    return { type: 'SetPersistedResultProps', payload: query };
+  }
+
+  reducer (state, action) {
+    return {
+      ...state,
+      selectedPersisted: {
+        ...state.selectedPersisted,
+        results: {
+          ...state.selectedPersisted.results,
+          ...action.payload
+        }
+      }
+    };
   }
 }
 
@@ -126,47 +159,45 @@ export class SetSelectedPersisted {
   }
 }
 
-export class SetPersistedResultsStatus {
-  action (query) {
-    return { type: 'SetPersistedResultsStatus', payload: query };
+export class SetSelectedPersistedProps {
+  action (obj) {
+    return { type: 'SetSelectedPersistedProps', payload: obj };
   }
 
   reducer (state, action) {
-    return {
-      ...state,
-      selectedPersisted: {
-        ...state.selectedPersisted,
-        results: {
-          ...state.selectedPersisted.results,
-          status: action.payload
+    if (action.type === 'SetSelectedPersistedProps') {
+
+      return {
+        ...state,
+        selectedPersisted: {
+          ...state.selectedPersisted,
+          ...action.payload
         }
-      }
-    };
+      };
+    
+    } else {
+      return state;
+    }
   }
 }
 
-export class SetPersistedSaveModel {
-  action (bool) {
-    return { type: 'SetPersistedSaveModel', payload: bool };
+export class SetUiPersistedProps {
+  action (obj) {
+    return { type: 'SetUiPersistedProps', payload: obj };
   }
 
   reducer (state, action) {
-    return {
-      ...state,
-      uiPersisted: { ...state.uiPersisted, isSaveModalOpen: action.payload }
-    };
-  }
-}
-
-export class SetPersistedInfoModal {
-  action (bool) {
-    return { type: 'SetPersistedInfoModal', payload: bool };
-  }
-
-  reducer (state, action) {
-    return {
-      ...state,
-      uiPersisted: { ...state.uiPersisted, isInfoModalOpen: action.payload }
-    };
+    if (action.type === 'SetUiPersistedProps') {
+      return {
+        ...state,
+        uiPersistedEditor: {
+          ...state.uiPersistedEditor,
+          ...action.payload
+        }
+      };
+    
+    } else {
+      return state;
+    }
   }
 }

@@ -20,9 +20,9 @@ const SubHeading = styled.h6`
 
 export default class InfoModal extends PureComponent {
   render () {
-    const { selectedQuery, setInfoModal, opened, result } = this.props;
+    const { selectedItem, setInfoModal, opened, result, infoModalHeader } = this.props;
 
-    const { headers, request, status, time } = result;
+    const { headers, request, status, time } = result || {};
 
     const responseHeaderKeys = headers ? Object.keys(headers) : [];
     const responseHeaderItems =
@@ -47,20 +47,22 @@ export default class InfoModal extends PureComponent {
           </div>
         );
       });
+    
+      
     return (
       <Modal
         setVisibility={setInfoModal}
         id={cuid()}
-        header="Query Info"
+        header={infoModalHeader}
         opened={opened}
         cancel={{ body: 'Close' }}
       >
         <SubHeading>
-          {selectedQuery.name}
+          {selectedItem.name}
         </SubHeading>
 
         <div>
-          <Label>id: </Label> {selectedQuery.id}
+          <Label>id: </Label> {selectedItem.id}
         </div>
         <SubHeading>General</SubHeading>
         <div>

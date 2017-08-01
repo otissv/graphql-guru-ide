@@ -38,8 +38,9 @@ export default class SaveModal extends PureComponent {
       handleChangeInputCollection,
       handleClickSave,
       opened,
-      queryCollection,
-      selectedQuery,
+      collection,
+      saveModalHeader,
+      selectedItem,
       setSaveModel,
       validation
     } = this.props;
@@ -48,7 +49,7 @@ export default class SaveModal extends PureComponent {
       <Modal
         cancel={{ onClick: this.handleOnClickCancel }}
         id={cuid()}
-        header="Save Query"
+        header={saveModalHeader}
         opened={opened}
         setVisibility={setSaveModel}
       >
@@ -62,7 +63,7 @@ export default class SaveModal extends PureComponent {
 
             <Input
               name="name"
-              value={forms.saveForm.fields.name.value || selectedQuery.name}
+              value={forms.saveForm.fields.name.value || selectedItem.name}
             />
 
             <FormError
@@ -77,7 +78,7 @@ export default class SaveModal extends PureComponent {
 
             <Creatable
               options={collectionLabels}
-              value={queryCollection}
+              value={collection}
               onInputChange={handleChangeInputCollection}
               onChange={handleChangeCollection}
               name="collection"
@@ -99,7 +100,7 @@ export default class SaveModal extends PureComponent {
               name="description"
               value={
                 forms.saveForm.fields.description.value ||
-                selectedQuery.description
+                selectedItem.description
               }
               placeholder="Adding a description makes your docs better"
             />
