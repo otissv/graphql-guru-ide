@@ -12,29 +12,38 @@ export const initialState = {
 export class ClearSettingsHistory {
   action (history = {}) {
     let request = Promise.resolve();
-
+console.log(history)
     if (
+      history.persistedCollection ||
       history.persistedHistory ||
       history.queryCollection ||
       history.queryHistory
     ) {
+      const idePersistedCollectionClear = history.persistedCollection 
+        ? 'idePersistedCollectionClear { id }' 
+        : '';
+      const idePersistedHistoryClear = history.persistedHistory 
+        ? 'idePersistedHistoryClear { id }' 
+        : '';
       const ideQueryHistoryClear = history.queryHistory
         ? 'ideQueryHistoryClear { id }'
         : '';
       const ideQueryCollectionClear = history.queryCollection
         ? 'ideQueryCollectionClear { id }'
         : '';
-      const idePersistedQueryClear = history.persistedHistory ? '' : '';
 
       const actions = [
-        ideQueryHistoryClear,
+        idePersistedCollectionClear,
+        idePersistedHistoryClear,
         ideQueryCollectionClear,
-        idePersistedQueryClear
+        ideQueryHistoryClear
       ].reduce((previous, action) => {
         return action !== '' ? [...previous, action] : previous;
       }, []);
 
       const query = `mutation {
+        ${idePersistedCollectionClear}
+        ${idePersistedHistoryClear}
         ${ideQueryHistoryClear}
         ${ideQueryCollectionClear}
       }`;

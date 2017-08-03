@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import autobind from 'class-autobind';
 import { connect } from '../../../store';
-import { buildClientSchema, parse, print } from 'graphql';
 import getClassMethods from '../../../helpers/get-class-methods';
 import cuid from 'cuid';
 import { initialState } from '../redux/redux-persisted';
@@ -77,9 +76,13 @@ class PersistedContainer extends React.PureComponent {
 
       return axios({
         ...axiosConfig,
-        data: JSON.parse(selectedPersisted.query)
+        data: {
+          query: JSON.parse(selectedPersisted.query),
+          variables: selectedPersisted.variables
+        }
       })
         .then(response => {
+          const responseData = response.data;
 
           const results = {
             request: {
@@ -93,41 +96,59 @@ class PersistedContainer extends React.PureComponent {
 
             headers: response.headers,
             status: `${response.status} ${response.statusText}`,
+            code: 200,
             time: `${new Date().getTime() - startResponseTime}`,
-            response: response.data
+            response: responseData
           };
 
           this.persisted.query = selectedPersisted.query;
 
-          const history = {
+          const data = {
             endpoint,
             query: selectedPersisted.query,
-            response: results.response,
-            variables: selectedPersisted.variables
+            variables: selectedPersisted.variables,
+            results
           };
   
           setSelectedPersisted({
             ...selectedPersisted,
             ...this.persisted,
-            results
+            ...data
           });
 
-          addPersistedHistoryItem(history);
-          savePersistedHistory(history);
+          addPersistedHistoryItem(data);
+          savePersistedHistory(data);
 
           return response.data.data;
         })
         .catch(error => {
           if (error.response) {
+            console.log(error.response);
             // Response status code 2xx
-            this.setState({
+            setPersistedResultProps({
               response: error.response.data,
               status: `${error.response.status} failed`,
+              code: parseInt(error.response.code, 10),
               headers: error.response.headers
             });
           } else if (error.request) {
             // No response was received
             console.log(error.request);
+            setPersistedResultProps({
+              response:  error.response.data,
+              status: '502 failed...',
+              code: 502,
+              headers: {}
+            });
+            
+          } else {
+            console.log(error);
+            setPersistedResultProps({
+              response: 'Connection failed',
+              status:'500 failed',
+              code: 500,
+              headers: {}
+            });
           }
         });
     }
@@ -347,6 +368,10 @@ class PersistedContainer extends React.PureComponent {
 
   handleOnChangePersisted (value) {
     this.props.setSelectedPersistedProps({ query: value });
+  }
+
+  handleOnVariableChange (value) {
+    this.props.setSelectedPersistedProps({ variables: value });
   }
 
   handleOnChangeRequest (value) {}

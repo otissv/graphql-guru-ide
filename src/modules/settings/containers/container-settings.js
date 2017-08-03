@@ -12,15 +12,18 @@ class SettingsContainer extends PureComponent {
 
   handleClickSaveSettings (values) {
     this.props.clearSettingsHistory({
+      persistedCollection: values.clearPersistedCollection,
       persistedHistory: values.clearPersistedHistory,
-      queryCollection: values.clearQueryCollection,
-      queryHistory: values.clearQueryHistory
+      queryCollection: values.clearRequestCollection,
+      queryHistory: values.clearRequestHistory
     });
 
+    values.clearPersistedCollection &&
+      this.props.persistedCollectionAllToInitialState();
     values.clearPersistedHistory &&
-      this.props.selectedPersistedToInitialState();
-    values.clearQueryCollection && this.props.queryCollectionAllToInitialState();
-    values.clearQueryHistory && this.props.queryHistoryAllToInitialState({});
+      this.props.persistedHistoryAllToInitialState();
+    values.clearRequestCollection && this.props.queryCollectionAllToInitialState();
+    values.clearRequestHistory && this.props.queryHistoryAllToInitialState({});
     this.props.resetForm('settingsForm');
     this.props.setSettingsModal(false);
   }

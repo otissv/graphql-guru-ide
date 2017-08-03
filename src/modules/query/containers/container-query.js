@@ -64,9 +64,10 @@ class GraphiQLContainer extends React.Component {
     } else {
       const {
         addQueryHistoryItem,
-        setSelectedQuery,
         saveQueryHistory,
-        selectedQuery
+        selectedQuery,
+        setQueryResultProps,
+        setSelectedQuery
       } = this.props;
 
       const endpoint = selectedQuery.endpoint;
@@ -88,58 +89,76 @@ class GraphiQLContainer extends React.Component {
         data: graphQLParams
       })
         .then(response => {
-          const results = {
-            request: {
-              data: response.config.data,
-              headers: response.config.headers,
-              method: 'POST',
-              url: response.config.url,
-              xsrfCookieName: response.config.xsrfCookieName,
-              xsrfHeaderName: response.config.xsrfHeaderName
-            },
-
-            headers: response.headers,
-            status: `${response.status} ${response.statusText}`,
-            time: `${new Date().getTime() - startResponseTime}`,
-            response: response.data
-          };
-
-          const history = {
+          const payload = {
             endpoint,
             query: graphQLParams.query,
-            response: results.response.data,
+            results: {
+              request: {
+                data: response.config.data,
+                headers: response.config.headers,
+                method: 'POST',
+                url: response.config.url,
+                xsrfCookieName: response.config.xsrfCookieName,
+                xsrfHeaderName: response.config.xsrfHeaderName
+              },
+
+              headers: response.headers,
+              status: `${response.status} ${response.statusText}`,
+              code: 200,
+              time: `${new Date().getTime() - startResponseTime}`,
+              response: response.data
+            },
             variables: graphQLParams.variables
+            ? JSON.stringify(graphQLParams.variables) 
+            : ''
           };
+
 
           const date = Date.parse(new Date());
 
           setSelectedQuery({
             ...selectedQuery,
             ...this.query,
-            query: graphQLParams.query,
-            results
+            ...payload
           });
 
           addQueryHistoryItem({
-            [date]: history
+            [date]: payload
           });
           saveQueryHistory({
-            [date]: history
+            [date]: payload
           });
 
           return response.data.data;
         })
         .catch(error => {
           if (error.response) {
+            console.log(error.response);
             // Response status code 2xx
-            this.setState({
+            setQueryResultProps({
               response: error.response.data,
               status: `${error.response.status} failed`,
+              code: parseInt(error.response.code, 10),
               headers: error.response.headers
             });
           } else if (error.request) {
             // No response was received
             console.log(error.request);
+            setQueryResultProps({
+              response:  error.response.data,
+              status: '502 failed...',
+              code: 502,
+              headers: {}
+            });
+            
+          } else {
+            console.log(error);
+            setQueryResultProps({
+              response: 'Connection failed',
+              status:'500 failed',
+              code: 500,
+              headers: {}
+            });
           }
         });
     }
@@ -203,7 +222,7 @@ class GraphiQLContainer extends React.Component {
       }
     });
 
-    this.props.setQuerySaveModel(true);
+    this.props.setUiQueryProps({ isSaveModalOpen: true });
   }
 
   handleClickSave (values) {
@@ -213,7 +232,7 @@ class GraphiQLContainer extends React.Component {
       resetForm,
       selectedQuery,
       setSelectedQuery,
-      setQuerySaveModel
+      setUiQueryProps
     } = this.props;
 
     const { name, description } = values;
@@ -236,7 +255,7 @@ class GraphiQLContainer extends React.Component {
         }
       })
       .catch(error => console.log(error));
-    setQuerySaveModel(false);
+    setUiQueryProps({ isSaveModalOpen: false });
     resetForm('saveForm');
   }
 
@@ -313,22 +332,17 @@ class GraphiQLContainer extends React.Component {
 
     const target = event.nativeEvent.target;
     const id = target.dataset.kitid;
-    const history = queryHistoryAll[id];
+    const historyItem = queryHistoryAll[id];
 
     const data = {
       ...initialState.query.selectedQuery,
-      ...history,
-      variables: history.variables || '',
-      results: {
-        ...initialState.query.selectedQuery.results,
-        response: history.response
-      }
+      ...historyItem
     };
 
     this.query.query = data.query;
     this.query.variables = data.variables;
 
-    this.getGraphQLSchema(history.endpoint);
+    this.getGraphQLSchema(historyItem.endpoint);
 
     setSelectedQuery(data);
     setQueryResultProps({ status: 'Waiting' });
@@ -371,7 +385,7 @@ class GraphiQLContainer extends React.Component {
         ? this.prettyQuery(selectedQuery.query)
         : '';
 
-    const variables = selectedQuery && selectedQuery.variables;
+    const variables = selectedQuery ? selectedQuery.variables : '';
     const Component = component;
     const schema = this.buildSchema();
 

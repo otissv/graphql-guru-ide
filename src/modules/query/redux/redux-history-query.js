@@ -33,17 +33,10 @@ export class ClearQueryHistoryItem {
 
 export class CreateQueryHistory {
   action (history) {
-    const data = history.reduce((previous, item) => {
-      return {
-        ...previous,
-        [item.id]: {
-          endpoint: item.endpoint,
-          query: item.query,
-          response: JSON.parse(item.response),
-          variables: item.variables
-        }
-      };
-    }, {});
+    const data = history.reduce((previous, item) => ({ 
+      ...previous, 
+      [item.id]: item 
+    }), {});
 
     return { type: 'QueryHistoryAllReducer', payload: data };
   }

@@ -11,9 +11,10 @@ export const initialState = {
     },
     settingsForm: {
       fields: {
+        clearPersistedCollection: { value: false },
         clearPersistedHistory: { value: false },
-        clearQueryCollection: { value: false },
-        clearQueryHistory: { value: false }
+        clearRequestCollection: { value: false },
+        clearRequestHistory: { value: false }
       }
     }
   }

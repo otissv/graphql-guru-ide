@@ -15,7 +15,7 @@ export const initialState = {
     description: '',
     endpoint: 'http://localhost:8000/graphql',
     name: '',
-    query: '',
+    query: '[\n  {\n    "id": ""  \n  }\n]',
     variables: '',
     results: {
       headers: {},

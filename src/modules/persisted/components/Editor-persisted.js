@@ -1,8 +1,8 @@
 import React from 'react';
 import autobind from 'class-autobind';
+import styled from 'styled-components';
 import RequestPersistedEditor from './Request-persisted';
 import PersistedResultEditor from './Result-persisted';
-import styled from 'styled-components';
 import IconButton from '../../../styled/components/IconButton';
 import '../css/style-persisted.css';
 import runIcon from '../../../icons/controller-play.svg';
@@ -12,6 +12,7 @@ import saveIcon from '../../../icons/save.svg';
 import infoIcon from '../../../icons/info.svg';
 import Editor from '../../shared/components/Editor/Editor-shared';
 import Connection from '../../shared/components/Connection-shared';
+import Variables from './Editor-variables';
 
 const EditorToolbar = styled.ul`
   position: absolute;
@@ -39,31 +40,37 @@ const Result = styled.div`
   width: 50%;
 `;
 
+const Request = styled.div`
+  flex: 1;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+`;
+
 const ResultFooter = styled.div`
   position: fixed;
   bottom: 0;
   right: 0;
   padding: 4px 20px;
-  backgroud: ${props => props.theme.colors.background}
+  background: ${props => props.theme.colors.background}
 `;
-
 
 const HistoryInfo = props =>
   <div>
-    <p>Use the query editor to left to send queries to the server.</p>
+    <p>Use the query editor to left to send persisted queries to the server.</p>
     <p>
-      Queries typically start with a {`"{"`} character. Lines that start with a
-      # are ignored.
+      Queries are list with 
     </p>
     <p>An example query might look like:</p>
     <pre>
-      {`}
-  User {
-    id
-    firstName
-    lastName
+      {`[
+  {
+    "id: "cj5uyf8ni"
+    "variables: {
+      "_id": "1"
+    }
   }
-}`}
+]`}
     </pre>
 
     <p>
@@ -76,16 +83,12 @@ const HistoryInfo = props =>
     </p>
   </div>;
 
-const CollectionInfo = props => <div>Save queries to create collections</div>;
+const CollectionInfo = props => <div>Save persisted queries to create collections</div>;
 
 export default class PersistedEditor extends React.PureComponent {
   constructor () {
     super(...arguments);
     autobind(this);
-  }
-
-  execute () {
-    
   }
 
   openSaveModel (bool) {
@@ -114,6 +117,7 @@ export default class PersistedEditor extends React.PureComponent {
       handleClickSave,
       handleOnChangePersisted,
       handleOnChangeRequest,
+      handleOnVariableChange,
       handlePersistedCollectionItemClick,
       handlePersistedHistoryItemClick,
       isConnected,
@@ -128,7 +132,7 @@ export default class PersistedEditor extends React.PureComponent {
       showSidebarPersistedCollection,
       showSidebarPersistedHistory,
       uiPersistedEditor,
-      validateSaveModule,
+      validateSaveModule
     } = this.props;
     
     const { sidebarPersistedContent } = uiPersistedEditor;
@@ -215,10 +219,17 @@ export default class PersistedEditor extends React.PureComponent {
         </EditorToolbarItem>
       </EditorToolbar>
       <Container>
-          <RequestPersistedEditor
-            selectedPersisted={selectedPersisted}
-            handleOnChange={handleOnChangePersisted}
-          />
+          <Request>
+            <RequestPersistedEditor
+              selectedPersisted={selectedPersisted}
+              handleOnChange={handleOnChangePersisted}
+              
+            />
+            <Variables 
+              value={selectedPersisted.variables}
+              handleOnChange={handleOnVariableChange}
+              />
+          </Request>
           <Result>
             <PersistedResultEditor
               selectedPersisted={selectedPersisted}

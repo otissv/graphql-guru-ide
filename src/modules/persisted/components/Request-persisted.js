@@ -1,7 +1,7 @@
 import React from 'react';
-import CodeMirror from 'react-codemirror';
 import autobind from 'class-autobind';
 import styled from 'styled-components';
+import CodeMirror from 'react-codemirror';
 import '../../../../node_modules/codemirror/lib/codemirror.css';
 require('codemirror/mode/javascript/javascript');
 require('codemirror/addon/fold/foldgutter');
@@ -11,10 +11,8 @@ require('codemirror/addon/search/search');
 require('codemirror/keymap/sublime');
 
 const PersistedRequest = styled.div`
-  flex: 1;
-  height: calc(100% - 30px) !important;
-  width: 50%;
   overflow-y: auto;
+  flex: 1;
 `;
 
 

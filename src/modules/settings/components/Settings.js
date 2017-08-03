@@ -20,6 +20,12 @@ const footerStyled = `
     align-items: flex-end;
 `;
 
+const Section = styled.div`
+  padding-top: 10px;
+  margin-bottom: 10px;
+`;
+
+
 const styledLabel = `display: block`;
 
 export default class Settings extends React.PureComponent {
@@ -50,12 +56,30 @@ export default class Settings extends React.PureComponent {
       >
         <ReduxForm name="settingsForm" onSubmit={handleClickSaveSettings}>
           <SubHeading>History</SubHeading>
+          <Section>Request</Section>
+
           <Checkbox
-            name="clearQueryHistory"
+            name="clearRequestCollection"
             styledLabel={styledLabel}
-            checked={forms.settingsForm.fields.clearQueryHistory.value}
+            checked={forms.settingsForm.fields.clearRequestCollection.value}
           >
-            Clear query history
+            Clear request collections
+          </Checkbox>
+          <Checkbox
+            name="clearRequestHistory"
+            styledLabel={styledLabel}
+            checked={forms.settingsForm.fields.clearRequestHistory.value}
+          >
+            Clear request history
+          </Checkbox>
+
+          <Section>Persisted</Section>
+          <Checkbox
+            name="clearPersistedCollection"
+            styledLabel={styledLabel}
+            checked={forms.settingsForm.fields.clearPersistedCollection.value}
+          >
+            Clear persisted collections
           </Checkbox>
 
           <Checkbox
@@ -64,14 +88,6 @@ export default class Settings extends React.PureComponent {
             checked={forms.settingsForm.fields.clearPersistedHistory.value}
           >
             Clear persisted history
-          </Checkbox>
-
-          <Checkbox
-            name="clearQueryCollection"
-            styledLabel={styledLabel}
-            checked={forms.settingsForm.fields.clearQueryCollection.value}
-          >
-            Clear collections
           </Checkbox>
 
           <FormRow styledFormRow={footerStyled}>

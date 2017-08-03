@@ -1,8 +1,6 @@
-import { IDE_ROUTE } from '../../../constants/routes-constants';
-import { query } from '../../../helpers/async-query';
+import * as reduxQuery from './redux-query';
 
 export const register = 'queryCollection';
-import * as reduxQuery from './redux-query';
 
 export const initialState = {
   queryCollectionAll: {}

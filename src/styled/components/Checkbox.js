@@ -3,7 +3,7 @@ import CheckboxStyled from '../Checkbox-styled';
 import styled from 'styled-components';
 
 const Label = styled.label`
-  margin-bottom: 25px;
+  margin-bottom: 15px;
   ${props => props.styledLabel};
 `;
 

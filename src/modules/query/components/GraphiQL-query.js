@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react';
 import autobind from 'class-autobind';
 import GraphiQL from 'graphiql';
 import styled from 'styled-components';
-import InfoModal from '../../shared/components/Info-modal-shared';
-import SaveModal from '../../shared/components/Save-modal-shared';
 import '../../../../node_modules/graphiql/graphiql.css';
 import '../css/graphiql-guru.css';
 import IconButton from '../../../styled/components/IconButton';
@@ -11,8 +9,6 @@ import prettifyIcon from '../../../icons/flash.svg';
 import refreshIcon from '../../../icons/ccw.svg';
 import saveIcon from '../../../icons/save.svg';
 import infoIcon from '../../../icons/info.svg';
-import downloadIcon from '../../../icons/download.svg';
-import unreadIcon from '../../../icons/unread.svg';
 import Editor from '../../shared/components/Editor/Editor-shared';
 import Connection from '../../shared/components/Connection-shared';
 
@@ -65,7 +61,7 @@ class CustomGraphiQL extends PureComponent {
     const { selectedQuery, setQueryResultProps, setUiQueryProps } = this.props; 
 
     if (selectedQuery.query.trim() === '') {
-      setQueryResultProps({ response: 'Please provide a persisted query.' });
+      setQueryResultProps({ response: 'Please provide a query.' });
     } else {
       setUiQueryProps({ isSaveModalOpen: true });
     }
@@ -85,7 +81,7 @@ class CustomGraphiQL extends PureComponent {
     const { selectedQuery, setQueryResultProps, setUiQueryProps } = this.props; 
 
     if (selectedQuery.query.trim() === '') {
-      setQueryResultProps({ response: 'Please provide a persisted query.' });
+      setQueryResultProps({ response: 'Please provide a query.' });
     } else {
       setUiQueryProps({ isSaveModalOpen: bool });
     }
@@ -125,7 +121,6 @@ class CustomGraphiQL extends PureComponent {
 
     return (
       <Editor
-        
         collectionInfo={<CollectionInfo />}
         collections={queryCollectionAll}
         history={queryHistoryAll}

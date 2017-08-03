@@ -11,8 +11,6 @@
     height: 100% !important;
 }
 
-
-
 .cm-s-dracula.CodeMirror,
 .cm-s-dracula .CodeMirror-gutters {
   background: #000000 !important;
@@ -61,6 +59,16 @@
   background-color: #e10098 !important;
 }
 
+.CodeMirror-info {
+  background: #000000 !important;
+  border-radius: 0;
+  border: 1px solid #f1f1f1;
+  color: #f1f1f1 !important;
+}
+
+.info-description {
+  color: #f1f1f1 !important;
+}
 .cm-s-dracula span.cm-string, 
 .cm-s-dracula span.cm-string-2,
 .result-window .cm-invalidchar  {
@@ -76,7 +84,7 @@
   width: 401px;
   position: fixed;
   right: -1px;
-  bottom: 70px;
+  bottom: 30px;
   top: 130px;
   z-index: 999;
 }
@@ -173,6 +181,24 @@
 
 .graphiql-container .doc-explorer-title-bar {
   height: auto;
+  color: #e10098;
+}
+
+.graphiql-container .docExplorerHide {
+  color: #f1f1f1;
+  transition: background ease-in 0.2s;
+  border-radius: 50%;
+  position: absolute;
+  height: 33px;
+  width: 33px;
+  right: 0;
+  line-height: 0;
+  padding: 16px 9px;
+  margin: 0;
+}
+
+.graphiql-container .docExplorerHide:hover {
+  background: #515151;
 }
 
 .graphiql-container .execute-button-wrap {
@@ -336,8 +362,18 @@
   background: none;
 }
 
+.graphiql-container .search-box .search-box-clear {
+  background: none;
+  transition: all ease-in 0.2s;
+}
+
+.graphiql-container .search-box .search-box-clear:hover {
+  background-color: #f1f1f1;
+  color: #515151;
+}
+
 .graphiql-container .search-box:before {
-  top: 2px;
+  top: -4px;
   left: 4px;
 }
 
@@ -346,19 +382,19 @@
   margin-right: 0;
 }
 
-.graphiql-container .field-name {
-  color: #66d9ef;
+.field-name {
+  color: #66d9ef !important;
 }
 
-.graphiql-container .arg-name {
-  color: #50fa7b;
+.arg-name {
+  color: #50fa7b !important;
 }
 
 .graphiql-container :not(pre) > code,
-.graphiql-container .type-name {
-  color: #bd93f9;
+.type-name {
+  color: #bd93f9 !important;
 }
 
-.graphiql-container .keyword {
-  color: #ff79c6;
+.keyword {
+  color: #ff79c6 !important;
 }

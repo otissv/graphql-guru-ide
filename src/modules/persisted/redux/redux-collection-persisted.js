@@ -1,8 +1,6 @@
-import { IDE_ROUTE } from '../../../constants/routes-constants';
-import { query } from '../../../helpers/async-query';
+import * as reduxPersisted from './redux-persisted';
 
 export const register = 'persistedCollection';
-import * as reduxPersisted from './redux-persisted';
 
 export const initialState = {
   persistedCollectionAll: {}

@@ -41,15 +41,10 @@ export class ClearPersistedHistoryItem {
 
 export class CreatePersistedHistory {
   action (history) {
-    const data = history.reduce((previous, item) => {
-      return {
-        ...previous,
-        [item.id]: {
-          ...item,
-          response: JSON.parse(item.response)
-        }
-      };
-    }, {});
+    const data = history.reduce((previous, item) => ({
+      ...previous,
+      [item.id]: item
+    }), {});
 
     return { type: 'PersistedHistoryAllReducer', payload: data };
   }
