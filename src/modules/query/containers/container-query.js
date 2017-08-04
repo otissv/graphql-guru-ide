@@ -235,11 +235,11 @@ class GraphiQLContainer extends React.Component {
       setUiQueryProps
     } = this.props;
 
-    const { name, description } = values;
+    const { collection, description, name } = values;
 
     const data = {
       ...this.query,
-      collection: this.query.collection.value,
+      collection,
       description,
       endpoint: selectedQuery.endpoint,
       id: selectedQuery.id || cuid(),
@@ -261,12 +261,9 @@ class GraphiQLContainer extends React.Component {
 
   validateSaveModule (data) {
     const errors = {};
-    const { name } = data;
+    const { name, collection } = data;
 
-    if (
-      this.query.collection.value == null ||
-      this.query.collection.value.trim() === ''
-    ) {
+    if (collection == null || collection.trim() === '') {
       errors.collection = 'Please enter a collection name';
     }
 

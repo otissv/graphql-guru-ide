@@ -26,6 +26,28 @@ export class setForms {
   }
 }
 
+export class SetSaveFormFields {
+  action (payload) {
+    return { type: 'SetSaveFormFields', payload };
+  }
+
+  reducer (state, action) {
+    return {
+      ...state,
+      forms: { 
+        ...state.forms,
+        saveForm: {
+          ...state.forms.saveForm,
+          fields: {
+            ...state.forms.saveForm.fields,
+            ...action.payload
+          }
+        }
+      }
+    };
+  }
+}
+
 export class FormReducer {
   reducer (state, action) {
     return {

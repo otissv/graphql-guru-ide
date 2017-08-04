@@ -48,11 +48,10 @@ export default class Editor extends PureComponent {
 
       collection,
       forms,  
-      handleChangeCollection,
-      handleChangeInputCollection,
       handleClickSave,
       saveModalHeader,
       saveModalOpened,
+      setSaveFormFields,
       validation,
   
       infoModalHeader,
@@ -91,12 +90,11 @@ export default class Editor extends PureComponent {
           collection={collection}
           collectionLabels={this.collectionLabels()}
           forms={forms}
-          handleChangeCollection={handleChangeCollection}
-          handleChangeInputCollection={handleChangeInputCollection}
           handleClickSave={handleClickSave}
           opened={saveModalOpened}
           saveModalHeader={saveModalHeader}
           selectedItem={selectedItem}
+          setSaveFormFields={setSaveFormFields}
           setSaveModel={setSaveModel}
           validation={validation}
         />

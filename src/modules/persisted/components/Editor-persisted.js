@@ -126,8 +126,9 @@ export default class PersistedEditor extends React.PureComponent {
       persistedHistoryAll,
       selectedPersisted,
       setGraphqlSchema,
-      setSelectedPersistedProps,
+      setSaveFormFields,
       setSchemaIsConnected,
+      setSelectedPersistedProps,
       setSettingsModal,
       showSidebarPersistedCollection,
       showSidebarPersistedHistory,
@@ -165,6 +166,7 @@ export default class PersistedEditor extends React.PureComponent {
         handleClickSave={handleClickSave}
         saveModalHeader="Save persisted"
         saveModalOpened={uiPersistedEditor.isSaveModalOpen}
+        setSaveFormFields={setSaveFormFields}
         setSaveModel={this.openSaveModel}
         validation={validateSaveModule}
     

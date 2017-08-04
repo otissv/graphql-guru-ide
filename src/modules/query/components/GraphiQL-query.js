@@ -24,8 +24,8 @@ const HistoryInfo = props =>
   <div>
     <p> Use the query editor to left to send queries to the server. </p> 
     <p>
-      Queries typically start with a {`"{"`}
-      character.Lines that start with a# are ignored. 
+      Queries typically start with a {`"{"`} character. 
+      Lines that start with a# are ignored. 
     </p> 
     <p> An example query might look like: </p> 
     <pre> {
@@ -58,7 +58,13 @@ class CustomGraphiQL extends PureComponent {
   }
 
   openSaveModel () {
-    const { selectedQuery, setQueryResultProps, setUiQueryProps } = this.props; 
+    const { selectedQuery, setQueryResultProps, setUiQueryProps, setSaveFormFields } = this.props; 
+
+    setSaveFormFields({
+      name: { value: selectedQuery.name },
+      collection: { value: selectedQuery.collection },
+      description: { value: selectedQuery.description }
+    });
 
     if (selectedQuery.query.trim() === '') {
       setQueryResultProps({ response: 'Please provide a query.' });
@@ -106,6 +112,7 @@ class CustomGraphiQL extends PureComponent {
       queryHistoryAll,
       result,
       selectedQuery,
+      setSaveFormFields,
       setSelectedQueryProps,
       setGraphqlSchema,
       setSchemaIsConnected,
@@ -146,6 +153,7 @@ class CustomGraphiQL extends PureComponent {
         handleClickSave={handleClickSave}
         saveModalHeader="Save query"
         saveModalOpened={uiQueryEditor.isSaveModalOpen}
+        setSaveFormFields={setSaveFormFields}
         validation={validateSaveModule}
     
         infoModalOpened={uiQueryEditor.isInfoModalOpen}

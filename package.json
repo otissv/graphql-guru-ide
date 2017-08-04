@@ -56,7 +56,6 @@
     "react-json-tree": "^0.10.9",
     "react-redux": "^5.0.2",
     "react-router": "^2.8.1",
-    "react-select": "^1.0.0-rc.5",
     "react-uikit-base": "^2.0.2",
     "react-uikit-form": "^2.0.3",
     "react-uikit-grid": "^2.0.3",

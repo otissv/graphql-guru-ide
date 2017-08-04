@@ -10,6 +10,7 @@ import FormRow from '../../../styled/FormRow-styled';
 import FormError from '../../../styled/FormError-styled';
 import Textarea from '../../../styled/Textarea-styled';
 import Button from '../../../styled/Button-styled';
+import Select from '../../../styled/components/Select';
 import cuid from 'cuid';
 
 const footerStyled = `
@@ -18,6 +19,7 @@ const footerStyled = `
     justify-content: flex-end;
     align-items: flex-end;
 `;
+
 
 export default class SaveModal extends PureComponent {
   constructor (props) {
@@ -34,13 +36,10 @@ export default class SaveModal extends PureComponent {
     const {
       collectionLabels,
       forms,
-      handleChangeCollection,
-      handleChangeInputCollection,
       handleClickSave,
+      handleCollectionOptionChange,
       opened,
-      collection,
       saveModalHeader,
-      selectedItem,
       setSaveModel,
       validation
     } = this.props;
@@ -63,11 +62,11 @@ export default class SaveModal extends PureComponent {
 
             <Input
               name="name"
-              value={forms.saveForm.fields.name.value || selectedItem.name}
+              value={forms.saveForm.fields.name.value}
             />
 
             <FormError
-              display={forms.saveForm.fields.name.error ? 'block' : 'none'}
+               display={forms.saveForm.fields.name.error ? 'block' : 'none'}
             >
               {forms.saveForm.fields.name.error}
             </FormError>
@@ -76,12 +75,11 @@ export default class SaveModal extends PureComponent {
           <FormRow>
             <FormLabel htmlFor="name">Collection</FormLabel>
 
-            <Creatable
-              options={collectionLabels}
-              value={collection}
-              onInputChange={handleChangeInputCollection}
-              onChange={handleChangeCollection}
+            <Select
               name="collection"
+              value={forms.saveForm.fields.collection.value}
+              options={collectionLabels}
+              onOptionChange={handleCollectionOptionChange}
             />
 
             <FormError
@@ -99,8 +97,7 @@ export default class SaveModal extends PureComponent {
             <Textarea
               name="description"
               value={
-                forms.saveForm.fields.description.value ||
-                selectedItem.description
+                forms.saveForm.fields.description.value
               }
               placeholder="Adding a description makes your docs better"
             />
@@ -131,3 +128,11 @@ export default class SaveModal extends PureComponent {
     );
   }
 }
+
+{/* <Creatable
+              options={collectionLabels}
+              value={collection}
+              onInputChange={handleChangeInputCollection}
+              onChange={handleChangeCollection}
+              name="collection"
+            /> */}
