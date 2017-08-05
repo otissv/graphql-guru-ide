@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import autobind from 'class-autobind';
-import { Creatable } from 'react-select';
 import Modal from '../../../styled/components/Modal';
-import 'react-select/dist/react-select.css';
 import ReduxForm from '../../shared/components/ReduxForm-shared';
 import FormLabel from '../../../styled/FormLabel-styled';
 import Input from '../../../styled/Input-styled';
