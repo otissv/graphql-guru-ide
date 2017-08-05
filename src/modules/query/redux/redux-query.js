@@ -15,6 +15,7 @@ export const initialState = {
     id: null,
     collection: '',
     description: '',
+    dirty: false,
     endpoint: 'http://localhost:8000/graphql',
     name: '',
     query: '',

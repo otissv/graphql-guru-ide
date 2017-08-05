@@ -49,6 +49,33 @@ export default class InfoModal extends PureComponent {
       setTimeout(() => this.setState({ copied: false }), 2000);
     }
   }
+
+  getID () {
+    const { selectedItem } = this.props;
+
+    const icon = selectedItem.id 
+      ? <IconButton
+          src={copy}
+        />
+      : null;
+
+    const id = (
+      <CopyToClipboard
+        text={selectedItem.id}
+        onCopy={this.onCopy}
+      >
+        <Copy>
+          <Label>id: </Label> 
+            {selectedItem.id} {icon} 
+            <Copied style={{ opacity: this.state.copied ? 1 : 0 }}>copied</Copied>
+        </Copy>
+      </CopyToClipboard>
+    );
+
+    return (isNaN(parseInt(selectedItem.id, 10))) && (selectedItem.id !== null)
+      ? id
+      : null;
+  }
   render () {
     const { selectedItem, setInfoModal, opened, result, infoModalHeader } = this.props;
     const { headers, request, status, time } = result || {};
@@ -78,13 +105,6 @@ export default class InfoModal extends PureComponent {
           </div>
         );
       });
-
-    const icon = selectedItem.id 
-      ? <IconButton
-          src={copy}
-        />
-      : null;
-    
       
     return (
       <Modal
@@ -98,17 +118,7 @@ export default class InfoModal extends PureComponent {
           {selectedItem.name}
         </SubHeading>
 
-
-          <CopyToClipboard
-            text={selectedItem.id}
-            onCopy={this.onCopy}
-          >
-            <Copy>
-              <Label>id: </Label> 
-                {selectedItem.id} {icon} 
-                <Copied style={{ opacity: this.state.copied ? 1 : 0 }}>copied</Copied>
-            </Copy>
-          </CopyToClipboard>
+        {this.getID()}
 
         <SubHeading>General</SubHeading>
         <div>

@@ -91,20 +91,6 @@ export default class PersistedEditor extends React.PureComponent {
     autobind(this);
   }
 
-  openSaveModel (bool) {
-    const { selectedPersisted, setPersistedResultProps, setUiPersistedProps } = this.props; 
-
-    if (selectedPersisted.query.trim() === '') {
-      setPersistedResultProps({ response: 'Please provide a persisted query.' });
-    } else {
-      setUiPersistedProps({ isSaveModalOpen: bool });
-    }
-  }
-
-  openInfoModal (bool) {
-    this.props.setUiPersistedProps({ isInfoModalOpen: bool });
-  }
-
   render () {
     const {
       fetcher,
@@ -167,13 +153,13 @@ export default class PersistedEditor extends React.PureComponent {
         saveModalHeader="Save persisted"
         saveModalOpened={uiPersistedEditor.isSaveModalOpen}
         setSaveFormFields={setSaveFormFields}
-        setSaveModel={this.openSaveModel}
+        setSaveModel={this.props.openSaveModel}
         validation={validateSaveModule}
     
         infoModalOpened={uiPersistedEditor.isInfoModalOpen}
         infoModalHeader="Persisted Info"
         result={selectedPersisted.results}
-        setInfoModal={this.openInfoModal}
+        setInfoModal={this.props.openInfoModal}
       >
       <EditorToolbar>
         <EditorToolbarItem className="Editor-toolbar-item">
@@ -196,7 +182,7 @@ export default class PersistedEditor extends React.PureComponent {
           <IconButton
             title="Save Persisted"
             src={saveIcon}
-            onClick={this.openSaveModel}
+            onClick={this.props.openSaveModel}
           >
             <i className="Settings-icon icon-floppy"></i>
           </IconButton>
@@ -214,7 +200,7 @@ export default class PersistedEditor extends React.PureComponent {
           <IconButton
             title="Persisted Information"
             src={infoIcon}
-            onClick={this.openInfoModal}
+            onClick={this.props.openInfoModal}
           >
             <i className="Settings-icon icon-info-circled"></i>
           </IconButton>

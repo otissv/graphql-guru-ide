@@ -187,16 +187,6 @@ class GraphiQLContainer extends React.Component {
     this.query.variables = variables;
   }
 
-  handleChangeCollection (selectObject) {
-    this.query.collection = selectObject;
-    this.forceUpdate();
-  }
-
-  handleChangeInputCollection (selectObject) {
-    this.query.collection = selectObject;
-    this.forceUpdate();
-  }
-
   handleClickRest () {
     this.query = {
       id: null,
@@ -210,19 +200,25 @@ class GraphiQLContainer extends React.Component {
     this.props.resetForm('saveForm');
   }
 
-  openSaveModel () {
-    this.props.setForms({
-      saveForm: {
-        ...formsInitialState.forms.saveForm,
-        fields: {
-          ...formsInitialState.forms.saveForm.fields,
-          name: { value: this.props.selectedQuery.name },
-          collection: this.query.collection
-        }
-      }
+  setInfoModal (bool) {
+    this.props.setUiQueryProps({ isInfoModalOpen: bool });
+  }
+
+  setSaveModal (bool) {
+    const { selectedQuery, setQueryResultProps, setUiQueryProps, setSaveFormFields, setSelectedQueryProps } = this.props; 
+
+    setSelectedQueryProps({ query: this.query.query });
+    setSaveFormFields({
+      name: { value: selectedQuery.name },
+      collection: { value: selectedQuery.collection },
+      description: { value: selectedQuery.description }
     });
 
-    this.props.setUiQueryProps({ isSaveModalOpen: true });
+    if ((this.query.query === '') && (selectedQuery.query.trim() === '')) {
+      setQueryResultProps({ response: 'Please provide a query.' });
+    } else {
+      setUiQueryProps({ isSaveModalOpen: bool });
+    }
   }
 
   handleClickSave (values) {
@@ -373,14 +369,22 @@ class GraphiQLContainer extends React.Component {
     return print(parse(query));
   }
 
+  getQuery () {
+    const { selectedQuery } = this.props;
+    if (this.query.query.trim() !== '') {
+      return this.prettyQuery(this.query.query);
+    } else if (selectedQuery.query && selectedQuery.query.trim() !== '') {
+      return this.prettyQuery(selectedQuery.query);
+    } else {
+      return '';
+    }
+  }
+
   render () {
     const { component, uiQueryEditor, selectedQuery } = this.props;
     const { gqlTheme, gqlThemePaper } = uiQueryEditor;
 
-    const query =
-      selectedQuery && selectedQuery.query && selectedQuery.query.trim() !== ''
-        ? this.prettyQuery(selectedQuery.query)
-        : '';
+    const query = this.getQuery();
 
     const variables = selectedQuery ? selectedQuery.variables : '';
     const Component = component;

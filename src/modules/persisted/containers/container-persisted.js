@@ -223,19 +223,18 @@ class PersistedContainer extends React.PureComponent {
     this.props.resetForm('saveForm');
   }
 
-  openSaveModel () {
-    this.props.setForms({
-      saveForm: {
-        ...formsInitialState.forms.saveForm,
-        fields: {
-          ...formsInitialState.forms.saveForm.fields,
-          name: { value: this.props.selectedPersisted.name },
-          collection: this.persisted.collection
-        }
-      }
-    });
+  openSaveModel (bool) {
+    const { selectedPersisted, setPersistedResultProps, setUiPersistedProps } = this.props; 
 
-    this.props.setPersistedSaveModel(true);
+    if (selectedPersisted.query.trim() === '') {
+      setPersistedResultProps({ response: 'Please provide a persisted query.' });
+    } else {
+      setUiPersistedProps({ isSaveModalOpen: bool });
+    }
+  }
+
+  openInfoModal (bool) {
+    this.props.setUiPersistedProps({ isInfoModalOpen: bool });
   }
 
   handleClickSave (values) {

@@ -58,42 +58,21 @@ class CustomGraphiQL extends PureComponent {
   }
 
   openSaveModel () {
-    const { selectedQuery, setQueryResultProps, setUiQueryProps, setSaveFormFields } = this.props; 
-
-    setSaveFormFields({
-      name: { value: selectedQuery.name },
-      collection: { value: selectedQuery.collection },
-      description: { value: selectedQuery.description }
-    });
-
-    if (selectedQuery.query.trim() === '') {
-      setQueryResultProps({ response: 'Please provide a query.' });
-    } else {
-      setUiQueryProps({ isSaveModalOpen: true });
-    }
+    this.props.setSaveModal(true);
   }
 
   openInfoModal () {
-    this.props.setUiQueryProps({ isInfoModalOpen: true });
+    this.props.setInfoModal(true);
   }
   
   setInfoModal (bool) {
-    this.props.setUiQueryProps({ isInfoModalOpen: bool });
+    this.props.setInfoModal(bool);
   }
 
   setSaveModal (bool) {
-    this.props.setUiQueryProps({ isSaveModalOpen: bool });
-
-    const { selectedQuery, setQueryResultProps, setUiQueryProps } = this.props; 
-
-    if (selectedQuery.query.trim() === '') {
-      setQueryResultProps({ response: 'Please provide a query.' });
-    } else {
-      setUiQueryProps({ isSaveModalOpen: bool });
-    }
+    this.props.setSaveModal(bool);
   }
   
-
   render () {
     const {
       

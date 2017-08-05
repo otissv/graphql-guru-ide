@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import settingsIcon from '../../../../icons/cog.svg';
 import Input from '../../../../styled/components/Input';
 import IconButton from '../../../../styled/components/IconButton';
+import Icon from '../../../../styled/components/Icon';
+import dotSingle from '../../../../icons/dot-single.svg';
+
 
 const Toolbar = styled.div`
   padding: 5px 10px;
@@ -84,13 +87,17 @@ export default class EditorToolbar extends PureComponent {
   }
 
   render () {
-    const { name, endpoint } = this.props;
+    const { dirty, name, endpoint } = this.props;
+
+    const dirtyIcon = dirty
+      ? <Icon src={dotSingle} />
+      : null;
 
     return (
       <Toolbar>
         <ToolbarRow>
           <ToolbarHeader>
-            {name || 'Unnamed'}
+           {dirtyIcon}{name || 'Unnamed'}
           </ToolbarHeader>
         </ToolbarRow>
         <ToolbarRow>
