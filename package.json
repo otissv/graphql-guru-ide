@@ -1,7 +1,7 @@
 {
   "name": "@graphql-guru/ide",
   "description": "Frontend IDE client for GraphQL Guru",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": [
     "ide",
     "front-end",

@@ -1,4 +1,4 @@
-import remodule from '../../remodule/dist/remodule';
+import remodule from 'remodule';
 import * as app from './core/app/redux-app';
 import * as forms from './modules/forms/redux/redux-forms';
 import * as graphql from './modules/graphql/redux/redux-graphql';
