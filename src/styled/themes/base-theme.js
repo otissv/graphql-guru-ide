@@ -1,5 +1,5 @@
 import { injectGlobal } from 'styled-components';
-import normalizeStyled from 'normalize-styled';
+import normalizeStyled from 'styled-normalize';
 
 export default function base ({ colors, fonts }) {
   return injectGlobal`
